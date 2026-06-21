@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { BarcodeScanner } from "./BarcodeScanner";
 
 interface FoodResult {
   name: string;
@@ -47,6 +48,7 @@ export function AddMealModal({ onClose, onAdded }: Props) {
   const [mealType, setMealType] = useState("lunch");
   const [mealName, setMealName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -185,22 +187,38 @@ export function AddMealModal({ onClose, onAdded }: Props) {
         {/* Scrollable body */}
         <div style={{ overflowY: "auto", flex: 1, padding: "16px 20px" }}>
 
-          {/* Search */}
-          <div style={{ position: "relative", marginBottom: "12px" }}>
-            <input
-              ref={inputRef}
-              style={s.input}
-              placeholder="Zutat suchen… Hähnchen, Reis, Brokkoli…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoFocus
-            />
-            {searching && (
-              <span style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "var(--text-muted)" }}>
-                Suche…
-              </span>
-            )}
+          {/* Search + Barcode */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <div style={{ position: "relative", flex: 1 }}>
+              <input
+                ref={inputRef}
+                style={s.input}
+                placeholder="Zutat suchen… Hähnchen, Reis…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoFocus
+              />
+              {searching && (
+                <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "var(--text-muted)" }}>
+                  Suche…
+                </span>
+              )}
+            </div>
+            <button
+              onClick={() => setShowScanner(true)}
+              title="Barcode scannen"
+              style={{ padding: "0 14px", background: "var(--bg-hover)", border: "1px solid var(--border)", borderRadius: "10px", color: "var(--text-secondary)", fontSize: "20px", cursor: "pointer", flexShrink: 0 }}
+            >
+              ◫
+            </button>
           </div>
+
+          {showScanner && (
+            <BarcodeScanner
+              onResult={(result) => { addIngredient(result); setShowScanner(false); }}
+              onClose={() => setShowScanner(false)}
+            />
+          )}
 
           {/* Search results */}
           {results.length > 0 && (

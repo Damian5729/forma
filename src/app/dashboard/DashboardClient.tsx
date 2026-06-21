@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { CalorieRing } from "@/components/CalorieRing";
 import { AddMealModal } from "@/components/AddMealModal";
+import { WaterTracker } from "@/components/WaterTracker";
+import { StreakBadge } from "@/components/StreakBadge";
 
 interface MealLog {
   id: string;
@@ -24,6 +26,9 @@ interface Props {
   goal: number;
   proteinGoal?: number;
   userGoal?: string;
+  userId?: string;
+  streak?: number;
+  initialWater?: number;
 }
 
 const mealTypeLabel: Record<string, string> = {
@@ -39,7 +44,7 @@ const suggestedRecipes = [
   { title: "Omelette mit Spinat", kcal: 310, protein: 28, duration: 10, href: "/recipes" },
 ];
 
-export function DashboardClient({ userName, initialMeals, goal, proteinGoal = 140, userGoal = "lose" }: Props) {
+export function DashboardClient({ userName, initialMeals, goal, proteinGoal = 140, userGoal = "lose", userId = "", streak = 0, initialWater = 0 }: Props) {
   const router = useRouter();
   const [meals, setMeals] = useState<MealLog[]>(initialMeals);
   const [showModal, setShowModal] = useState(false);
@@ -85,9 +90,12 @@ export function DashboardClient({ userName, initialMeals, goal, proteinGoal = 14
           <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "4px", letterSpacing: "0.5px" }}>
             {dateStr}
           </p>
-          <h1 style={{ fontSize: "22px", fontWeight: 500, color: "var(--text-primary)" }}>
-            Hallo, {userName.split(" ")[0]}
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <h1 style={{ fontSize: "22px", fontWeight: 500, color: "var(--text-primary)" }}>
+              Hallo, {userName.split(" ")[0]}
+            </h1>
+            {streak > 0 && <StreakBadge streak={streak} />}
+          </div>
         </div>
 
         {/* Calorie ring card */}
@@ -132,6 +140,13 @@ export function DashboardClient({ userName, initialMeals, goal, proteinGoal = 14
             {coachMsg}
           </p>
         </div>
+
+        {/* Water tracker */}
+        {userId && (
+          <div style={{ marginBottom: "12px" }}>
+            <WaterTracker userId={userId} initialGlasses={initialWater} goal={8} />
+          </div>
+        )}
 
         {/* Add meal button — prominent on mobile */}
         <button

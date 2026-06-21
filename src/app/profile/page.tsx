@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { ProfileForm } from "./ProfileForm";
+import Link from "next/link";
 
 export default async function Profile() {
   const supabase = await createClient();
@@ -54,6 +55,22 @@ export default async function Profile() {
             ))}
           </div>
         )}
+
+        {/* Quick links */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "24px" }}>
+          {[
+            { href: "/profile/measurements", label: "Körpermaße", icon: "◎", desc: "Taille, Hüfte, Arme tracken" },
+            { href: "/profile/templates", label: "Vorlagen", icon: "◈", desc: "Lieblingsmahlzeiten speichern" },
+            { href: "/progress/weight", label: "Gewicht", icon: "◇", desc: "Gewichtsverlauf & Kurve" },
+            { href: "/fitness/plan", label: "Trainingspläne", icon: "⬡", desc: "Empfohlen für dein Ziel" },
+          ].map((l) => (
+            <Link key={l.href} href={l.href} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", padding: "14px 16px", textDecoration: "none", display: "block" }}>
+              <div style={{ fontSize: "18px", color: "var(--accent)", marginBottom: "6px" }}>{l.icon}</div>
+              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "2px" }}>{l.label}</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{l.desc}</div>
+            </Link>
+          ))}
+        </div>
 
         {/* Form */}
         <ProfileForm userId={user.id} initial={profile} />
