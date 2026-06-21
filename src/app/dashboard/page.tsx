@@ -26,17 +26,18 @@ export default async function Dashboard() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [{ data: meals }, { data: profile }, { data: streakLogs }, { data: waterLog }] = await Promise.all([
+  const [{ data: meals }, { data: profile }, { data: streakLogs }, { data: waterLog }, { data: templates }] = await Promise.all([
     supabase.from("meal_logs").select("*").eq("user_id", user.id)
       .gte("logged_at", `${today}T00:00:00`).lte("logged_at", `${today}T23:59:59`)
       .order("logged_at", { ascending: true }),
     supabase.from("user_profiles").select("daily_calories, protein_goal, carb_goal, fat_goal, name, goal").eq("id", user.id).single(),
     supabase.from("meal_logs").select("logged_at").eq("user_id", user.id).order("logged_at", { ascending: false }).limit(60),
     supabase.from("water_logs").select("glasses").eq("user_id", user.id).eq("logged_at", today).single(),
+    supabase.from("meal_templates").select("id, name, calories, protein, meal_type").eq("user_id", user.id).limit(4),
   ]);
 
   const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
-  const streak = calcStreak((streakLogs ?? []).map((l) => l.logged_at));
+  const streak = calcStreak((streakLogs ?? []).map((l: { logged_at: string }) => l.logged_at));
 
   return (
     <DashboardClient
@@ -44,10 +45,13 @@ export default async function Dashboard() {
       initialMeals={meals ?? []}
       goal={profile?.daily_calories ?? 1850}
       proteinGoal={profile?.protein_goal ?? 140}
+      carbGoal={profile?.carb_goal ?? 200}
+      fatGoal={profile?.fat_goal ?? 60}
       userGoal={profile?.goal ?? "lose"}
       userId={user.id}
       streak={streak}
       initialWater={waterLog?.glasses ?? 0}
+      quickTemplates={(templates as { id: string; name: string; calories: number; protein: number; meal_type: string }[] | null) ?? []}
     />
   );
 }

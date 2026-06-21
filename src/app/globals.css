@@ -127,3 +127,21 @@ body {
     font-size: 16px !important;
   }
 }
+
+/* ── Transitions & polish ── */
+a, button { transition: opacity 0.15s; }
+a:active, button:active { opacity: 0.7; }
+
+input:focus {
+  border-color: rgba(29,158,117,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(29,158,117,0.08) !important;
+}
+
+/* ── Card hover lift ── */
+.card-hover {
+  transition: transform 0.15s, border-color 0.15s;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(29,158,117,0.3) !important;
+}
