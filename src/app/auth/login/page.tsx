@@ -26,8 +26,7 @@ export default function Login() {
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
+    window.location.href = "/dashboard";
   };
 
   const inputStyle: React.CSSProperties = {

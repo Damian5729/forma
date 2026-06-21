@@ -13,22 +13,117 @@
   --accent: #1D9E75;
   --accent-light: #5DCAA5;
   --accent-bg: #091a12;
+  --nav-height: 56px;
+  --bottom-nav-height: 0px;
 }
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans, system-ui, sans-serif);
 }
 
 ::selection { background: var(--accent); color: #fff; }
-
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Responsive helpers ── */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.grid-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.grid-4col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 10px;
+}
+.flex-stack {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.main-pad {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.hide-mobile { display: block; }
+.show-mobile { display: none; }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  :root {
+    --bottom-nav-height: 68px;
+  }
+
+  .grid-2col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .grid-3col {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .grid-4col {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .flex-stack {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .main-pad {
+    padding: 16px 16px calc(var(--bottom-nav-height) + 16px);
+  }
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: block; }
+}
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  display: none;
+}
+@media (max-width: 640px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+    align-items: center;
+    justify-content: space-around;
+  }
+  .top-nav-links {
+    display: none !important;
+  }
+  .top-nav {
+    padding: 0 16px;
+  }
+}
+
+/* ── Input/button touch targets ── */
+@media (max-width: 640px) {
+  input, button, select {
+    font-size: 16px !important;
+  }
+}

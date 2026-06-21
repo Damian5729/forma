@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { CalorieRing } from "@/components/CalorieRing";
 import { AddMealModal } from "@/components/AddMealModal";
@@ -21,6 +22,8 @@ interface Props {
   userName: string;
   initialMeals: MealLog[];
   goal: number;
+  proteinGoal?: number;
+  userGoal?: string;
 }
 
 const mealTypeLabel: Record<string, string> = {
@@ -31,12 +34,12 @@ const mealTypeLabel: Record<string, string> = {
 };
 
 const suggestedRecipes = [
-  { title: "Lachs mit Brokkoli", kcal: 380, protein: 42, duration: 20 },
-  { title: "Hüttenkäse-Bowl", kcal: 290, protein: 38, duration: 5 },
-  { title: "Omelette mit Spinat", kcal: 310, protein: 28, duration: 10 },
+  { title: "Lachs mit Brokkoli", kcal: 380, protein: 42, duration: 20, href: "/recipes" },
+  { title: "Hüttenkäse-Bowl", kcal: 290, protein: 38, duration: 5, href: "/recipes" },
+  { title: "Omelette mit Spinat", kcal: 310, protein: 28, duration: 10, href: "/recipes" },
 ];
 
-export function DashboardClient({ userName, initialMeals, goal }: Props) {
+export function DashboardClient({ userName, initialMeals, goal, proteinGoal = 140, userGoal = "lose" }: Props) {
   const router = useRouter();
   const [meals, setMeals] = useState<MealLog[]>(initialMeals);
   const [showModal, setShowModal] = useState(false);
@@ -52,15 +55,15 @@ export function DashboardClient({ userName, initialMeals, goal }: Props) {
   }, [router]);
 
   const dateStr = new Date().toLocaleDateString("de-DE", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric"
-  }).toUpperCase();
+    weekday: "long", day: "numeric", month: "long"
+  });
 
   const remaining = Math.max(goal - consumed, 0);
   const coachMsg = remaining > 600
-    ? "Du hast noch viel Spielraum. Denk an eine proteinreiche Mahlzeit!"
+    ? "Noch viel Spielraum. Denk an eine proteinreiche Mahlzeit!"
     : remaining > 200
-    ? `Noch ${remaining} kcal übrig. Ideal für eine leichte Mahlzeit oder Snack.`
-    : "Fast am Tagesziel — kleine proteinreiche Snacks sind jetzt perfekt.";
+    ? `Noch ${remaining} kcal übrig — ideal für Snack oder leichte Mahlzeit.`
+    : "Fast am Tagesziel — kleine proteinreiche Snacks jetzt perfekt.";
 
   const formatTime = (iso: string) =>
     new Date(iso).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
@@ -76,155 +79,129 @@ export function DashboardClient({ userName, initialMeals, goal }: Props) {
         />
       )}
 
-      <main style={{ maxWidth: "800px", margin: "0 auto", padding: "32px 24px" }}>
-        <div style={{ marginBottom: "32px" }}>
-          <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: "0 0 4px", letterSpacing: "0.5px" }}>
+      <main className="main-pad" style={{ maxWidth: "800px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "4px", letterSpacing: "0.5px" }}>
             {dateStr}
           </p>
-          <h1 style={{ fontSize: "24px", fontWeight: 500, margin: 0, color: "var(--text-primary)" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: 500, color: "var(--text-primary)" }}>
             Hallo, {userName.split(" ")[0]}
           </h1>
         </div>
 
-        {/* Calorie ring */}
+        {/* Calorie ring card */}
         <div
           style={{
             background: "var(--bg-card)", border: "1px solid var(--border)",
-            borderRadius: "16px", padding: "24px",
-            display: "flex", gap: "32px", alignItems: "center",
-            marginBottom: "12px",
+            borderRadius: "16px", padding: "20px", marginBottom: "12px",
           }}
         >
-          <CalorieRing consumed={consumed} goal={goal} size={140} />
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-              {[
-                { label: "Protein", value: `${proteinTotal}g`, color: "var(--accent-light)" },
-                { label: "Kohlenhydrate", value: `${carbTotal}g`, color: "var(--text-primary)" },
-                { label: "Fett", value: `${fatTotal}g`, color: "var(--text-primary)" },
-              ].map((m) => (
-                <div key={m.label} style={{ background: "var(--bg-hover)", borderRadius: "10px", padding: "12px" }}>
-                  <div style={{ fontSize: "18px", fontWeight: 500, color: m.color }}>{m.value}</div>
-                  <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>{m.label}</div>
-                </div>
-              ))}
+          <div className="flex-stack">
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CalorieRing consumed={consumed} goal={goal} size={130} />
             </div>
-            <div style={{ height: "6px", background: "var(--bg-hover)", borderRadius: "99px", overflow: "hidden" }}>
-              <div
-                style={{
-                  height: "100%",
-                  width: `${Math.min((consumed / goal) * 100, 100)}%`,
-                  background: consumed > goal ? "#E24B4A" : "var(--accent)",
-                  borderRadius: "99px",
-                  transition: "width 0.6s ease",
-                }}
-              />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-              <span style={{ fontSize: "12px", color: "var(--text-secondary)" }}>{consumed} kcal gegessen</span>
-              <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Ziel: {goal} kcal</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="grid-3col" style={{ marginBottom: "14px" }}>
+                {[
+                  { label: "Protein", value: `${proteinTotal}g`, color: "var(--accent-light)" },
+                  { label: "Carbs", value: `${carbTotal}g`, color: "var(--text-primary)" },
+                  { label: "Fett", value: `${fatTotal}g`, color: "var(--text-primary)" },
+                ].map((m) => (
+                  <div key={m.label} style={{ background: "var(--bg-hover)", borderRadius: "10px", padding: "10px", textAlign: "center" }}>
+                    <div style={{ fontSize: "16px", fontWeight: 500, color: m.color }}>{m.value}</div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)", marginTop: "2px" }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ height: "5px", background: "var(--bg-hover)", borderRadius: "99px", overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${Math.min((consumed / goal) * 100, 100)}%`, background: consumed > goal ? "#E24B4A" : "var(--accent)", borderRadius: "99px", transition: "width 0.6s ease" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "5px" }}>
+                <span style={{ fontSize: "11px", color: "var(--text-secondary)" }}>{consumed} kcal</span>
+                <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>/ {goal} kcal</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Coach tip */}
-        <div
-          style={{
-            background: "var(--accent-bg)", border: "1px solid rgba(29,158,117,0.25)",
-            borderRadius: "12px", padding: "14px 18px", marginBottom: "24px",
-            display: "flex", gap: "10px", alignItems: "flex-start",
-          }}
-        >
-          <span style={{ fontSize: "16px", color: "var(--accent)", marginTop: "1px" }}>◎</span>
+        <div style={{ background: "var(--accent-bg)", border: "1px solid rgba(29,158,117,0.25)", borderRadius: "12px", padding: "13px 16px", marginBottom: "20px", display: "flex", gap: "10px" }}>
+          <span style={{ color: "var(--accent)", flexShrink: 0 }}>◎</span>
           <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.6 }}>
             {coachMsg}
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        {/* Add meal button — prominent on mobile */}
+        <button
+          onClick={() => setShowModal(true)}
+          style={{
+            width: "100%", padding: "14px",
+            background: "var(--accent)", border: "none",
+            borderRadius: "12px", color: "#fff",
+            fontSize: "15px", fontWeight: 500, cursor: "pointer",
+            marginBottom: "20px",
+          }}
+        >
+          + Mahlzeit eintragen
+        </button>
+
+        {/* Meals + Recipes grid */}
+        <div className="grid-2col">
           {/* Meal log */}
           <div>
-            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 12px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "10px" }}>
               Heute gegessen
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {meals.length === 0 && (
-                <p style={{ fontSize: "13px", color: "var(--text-muted)", padding: "12px 0" }}>
-                  Noch nichts eingetragen.
-                </p>
+                <p style={{ fontSize: "13px", color: "var(--text-muted)", padding: "8px 0" }}>Noch nichts eingetragen.</p>
               )}
               {meals.map((m) => (
                 <div
                   key={m.id}
-                  style={{
-                    background: "var(--bg-card)", border: "1px solid var(--border)",
-                    borderRadius: "10px", padding: "12px 14px",
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                  }}
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}
                 >
-                  <div>
-                    <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 2px" }}>
+                  <div style={{ minWidth: 0, flex: 1, marginRight: "8px" }}>
+                    <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {m.name}
                     </p>
                     <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>
                       {formatTime(m.logged_at)} · {mealTypeLabel[m.meal_type] ?? m.meal_type}
                     </p>
                   </div>
-                  <div style={{ textAlign: "right" }}>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <div style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{m.calories}</div>
                     <div style={{ fontSize: "10px", color: "var(--accent-light)" }}>{m.protein}g P</div>
                   </div>
                 </div>
               ))}
-              <button
-                onClick={() => setShowModal(true)}
-                style={{
-                  width: "100%", padding: "10px",
-                  background: "transparent",
-                  border: "1px dashed var(--border)",
-                  borderRadius: "10px",
-                  color: "var(--accent-light)", fontSize: "13px", cursor: "pointer",
-                }}
-              >
-                + Mahlzeit hinzufügen
-              </button>
             </div>
           </div>
 
           {/* Recipe suggestions */}
           <div>
-            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 12px" }}>
-              Empfohlen für heute
+            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "10px" }}>
+              Empfohlen
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {suggestedRecipes.map((r) => (
-                <div
+                <Link
                   key={r.title}
-                  style={{
-                    background: "var(--bg-card)", border: "1px solid var(--border)",
-                    borderRadius: "10px", padding: "12px 14px",
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    cursor: "pointer",
-                  }}
+                  href={r.href}
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", textDecoration: "none" }}
                 >
-                  <div>
-                    <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 2px" }}>
+                  <div style={{ minWidth: 0, flex: 1, marginRight: "8px" }}>
+                    <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {r.title}
                     </p>
-                    <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>
-                      {r.duration} Min · {r.protein}g Protein
-                    </p>
+                    <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>{r.duration} Min · {r.protein}g P</p>
                   </div>
-                  <div
-                    style={{
-                      fontSize: "11px", color: "var(--accent-light)",
-                      background: "var(--accent-bg)", padding: "4px 8px",
-                      borderRadius: "6px", border: "1px solid rgba(93,202,165,0.2)",
-                    }}
-                  >
+                  <div style={{ fontSize: "11px", color: "var(--accent-light)", background: "var(--accent-bg)", padding: "4px 8px", borderRadius: "6px", whiteSpace: "nowrap" }}>
                     {r.kcal} kcal
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

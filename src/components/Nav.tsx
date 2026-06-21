@@ -7,7 +7,9 @@ import { createClient } from "@/lib/supabase/client";
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/recipes", label: "Rezepte" },
-  { href: "/log", label: "Tagebuch" },
+  { href: "/fitness", label: "Fitness" },
+  { href: "/progress", label: "Fortschritt" },
+  { href: "/profile", label: "Profil" },
 ];
 
 export function Nav({ active, userName }: { active: string; userName?: string }) {
@@ -16,8 +18,7 @@ export function Nav({ active, userName }: { active: string; userName?: string })
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
+    window.location.href = "/";
   };
 
   const initials = userName
@@ -26,6 +27,7 @@ export function Nav({ active, userName }: { active: string; userName?: string })
 
   return (
     <nav
+      className="top-nav"
       style={{
         padding: "0 24px",
         height: "56px",
@@ -46,7 +48,7 @@ export function Nav({ active, userName }: { active: string; userName?: string })
         forma
       </Link>
 
-      <div style={{ display: "flex", gap: "4px" }}>
+      <div className="top-nav-links" style={{ display: "flex", gap: "4px" }}>
         {links.map((l) => (
           <Link
             key={l.href}
@@ -86,6 +88,7 @@ export function Nav({ active, userName }: { active: string; userName?: string })
         </div>
         <button
           onClick={handleLogout}
+          className="hide-mobile"
           style={{
             padding: "5px 12px",
             background: "transparent",
