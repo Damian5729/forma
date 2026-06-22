@@ -43,8 +43,7 @@ export default function Register() {
       return;
     }
 
-    router.push("/onboarding");
-    router.refresh();
+    router.push("/auth/confirm-email");
   };
 
   const inputStyle: React.CSSProperties = {

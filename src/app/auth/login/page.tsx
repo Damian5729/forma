@@ -169,7 +169,12 @@ export default function Login() {
           </button>
         </form>
 
-        <p style={{ fontSize: "13px", color: "var(--text-secondary)", textAlign: "center", margin: "20px 0 0" }}>
+        <p style={{ fontSize: "13px", color: "var(--text-secondary)", textAlign: "center", margin: "20px 0 8px" }}>
+          <Link href="/auth/reset-password" style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            Passwort vergessen?
+          </Link>
+        </p>
+        <p style={{ fontSize: "13px", color: "var(--text-secondary)", textAlign: "center", margin: "0" }}>
           Noch kein Account?{" "}
           <Link href="/auth/register" style={{ color: "var(--accent-light)", textDecoration: "none" }}>
             Registrieren
