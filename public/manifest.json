@@ -1,0 +1,41 @@
+{
+  "name": "Forma — Intelligente Ernährung",
+  "short_name": "Forma",
+  "description": "Premium Kalorienzähler mit KI-Coach, Rezepten & Aktivitäts-Tracking",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0c",
+  "theme_color": "#1D9E75",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mahlzeit eintragen",
+      "url": "/dashboard",
+      "description": "Schnell eine Mahlzeit loggen"
+    },
+    {
+      "name": "Rezepte",
+      "url": "/recipes",
+      "description": "Proteinreiche Rezepte entdecken"
+    },
+    {
+      "name": "Supplements",
+      "url": "/supplements",
+      "description": "Supplement loggen"
+    }
+  ]
+}

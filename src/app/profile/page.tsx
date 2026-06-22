@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { ProfileForm } from "./ProfileForm";
+import { LogoutButton } from "./LogoutButton";
 import Link from "next/link";
 
 export default async function Profile() {
@@ -59,10 +60,12 @@ export default async function Profile() {
         {/* Quick links */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "24px" }}>
           {[
-            { href: "/profile/measurements", label: "Körpermaße", icon: "◎", desc: "Taille, Hüfte, Arme tracken" },
-            { href: "/profile/templates", label: "Vorlagen", icon: "◈", desc: "Lieblingsmahlzeiten speichern" },
-            { href: "/progress/weight", label: "Gewicht", icon: "◇", desc: "Gewichtsverlauf & Kurve" },
-            { href: "/fitness/plan", label: "Trainingspläne", icon: "⬡", desc: "Empfohlen für dein Ziel" },
+            { href: "/profile/measurements", label: "Körpermaße", icon: "📏", desc: "Taille, Hüfte, Arme tracken" },
+            { href: "/profile/templates", label: "Vorlagen", icon: "📋", desc: "Lieblingsmahlzeiten speichern" },
+            { href: "/profile/bmi", label: "BMI & Körper", icon: "⚖️", desc: "BMI, Idealgewicht & Werte" },
+            { href: "/fitness/plan", label: "Trainingspläne", icon: "🏋️", desc: "Empfohlen für dein Ziel" },
+            { href: "/profile/goals", label: "Makro-Ziele", icon: "🎯", desc: "Kalorien & Makros anpassen" },
+            { href: "/profile/body-comp", label: "Körperzusammensetzung", icon: "🧬", desc: "Körperfett % & Muskelmasse" },
           ].map((l) => (
             <Link key={l.href} href={l.href} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", padding: "14px 16px", textDecoration: "none", display: "block" }}>
               <div style={{ fontSize: "18px", color: "var(--accent)", marginBottom: "6px" }}>{l.icon}</div>
@@ -74,6 +77,8 @@ export default async function Profile() {
 
         {/* Form */}
         <ProfileForm userId={user.id} initial={profile} />
+
+        <LogoutButton />
       </main>
     </div>
   );

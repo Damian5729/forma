@@ -24,6 +24,7 @@ export function ProfileForm({ userId, initial }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: (initial?.name as string) ?? "",
     age: String(initial?.age ?? ""),
@@ -42,13 +43,14 @@ export function ProfileForm({ userId, initial }: Props) {
 
   const handleSave = async () => {
     setSaving(true);
+    setSaveError(null);
     const supabase = createClient();
     const kcal = calcCalories(Number(form.age), Number(form.weight), Number(form.height), form.gender, form.activity, form.goal);
     const protein = Math.round(Number(form.weight) * 1.8);
     const carbs = Math.round((kcal * 0.4) / 4);
     const fat = Math.round((kcal * 0.25) / 9);
 
-    await supabase.from("user_profiles").upsert({
+    const { error } = await supabase.from("user_profiles").upsert({
       id: userId,
       name: form.name,
       age: Number(form.age),
@@ -64,9 +66,15 @@ export function ProfileForm({ userId, initial }: Props) {
       updated_at: new Date().toISOString(),
     });
 
+    if (error) {
+      setSaveError(error.message);
+      setSaving(false);
+      return;
+    }
+
     setSaving(false);
     setSaved(true);
-    setTimeout(() => { setSaved(false); router.refresh(); }, 2000);
+    setTimeout(() => router.push("/dashboard"), 1500);
   };
 
   const inputStyle: React.CSSProperties = {
@@ -141,8 +149,14 @@ export function ProfileForm({ userId, initial }: Props) {
         disabled={saving || saved}
         style={{ padding: "12px", background: saved ? "var(--accent-bg)" : "var(--accent)", border: "none", borderRadius: "10px", color: saved ? "var(--accent-light)" : "#fff", fontSize: "15px", fontWeight: 500, cursor: saving || saved ? "default" : "pointer" }}
       >
-        {saved ? "✓ Gespeichert!" : saving ? "Wird gespeichert…" : "Profil speichern"}
+        {saved ? "✓ Gespeichert! Weiterleitung…" : saving ? "Wird gespeichert…" : "Profil speichern"}
       </button>
+
+      {saveError && (
+        <div style={{ padding: "12px 14px", background: "rgba(226,75,74,0.12)", border: "1px solid rgba(226,75,74,0.3)", borderRadius: "10px", color: "#E24B4A", fontSize: "13px" }}>
+          Fehler: {saveError}
+        </div>
+      )}
     </div>
   );
 }

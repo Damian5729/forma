@@ -79,8 +79,13 @@ export default async function Progress() {
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Nav active="/progress" userName={userName} />
 
-      <main className="main-pad" style={{ maxWidth: "800px" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: 500, margin: "0 0 24px", color: "var(--text-primary)" }}>Fortschritt</h1>
+      <main className="main-pad page-enter" style={{ maxWidth: "800px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 500, margin: 0, color: "var(--text-primary)" }}>📈 Fortschritt</h1>
+          <Link href="/progress/calendar" style={{ padding: "8px 14px", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", color: "var(--text-secondary)", fontSize: "12px", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
+            📅 Kalender
+          </Link>
+        </div>
 
         {/* Quick stats */}
         <div className="grid-4col" style={{ marginBottom: "20px" }}>

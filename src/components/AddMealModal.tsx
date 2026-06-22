@@ -49,6 +49,11 @@ export function AddMealModal({ onClose, onAdded }: Props) {
   const [mealName, setMealName] = useState("");
   const [saving, setSaving] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [mode, setMode] = useState<"search" | "manual">("search");
+  const [manual, setManual] = useState({ name: "", calories: "", protein: "", carbs: "", fat: "" });
+  const [photoScanning, setPhotoScanning] = useState(false);
+  const [photoResult, setPhotoResult] = useState<{ items: { name: string; calories: number; protein: number; carbs: number; fat: number; amount: string }[]; total: { calories: number; protein: number; carbs: number; fat: number }; confidence: string } | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -82,6 +87,47 @@ export function AddMealModal({ onClose, onAdded }: Props) {
     setQuery("");
     setResults([]);
     inputRef.current?.focus();
+  };
+
+  const handlePhotoScan = async (file: File) => {
+    setPhotoScanning(true);
+    setPhotoResult(null);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target?.result as string;
+        const base64 = dataUrl.split(",")[1];
+        const mediaType = file.type as "image/jpeg" | "image/png" | "image/webp";
+        const res = await fetch("/api/food-scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageBase64: base64, mediaType }),
+        });
+        const data = await res.json();
+        if (data.items) setPhotoResult(data);
+        else alert("Analyse fehlgeschlagen. Versuche ein klareres Foto.");
+        setPhotoScanning(false);
+      };
+      reader.readAsDataURL(file);
+    } catch {
+      setPhotoScanning(false);
+      alert("Fehler beim Verarbeiten des Fotos.");
+    }
+  };
+
+  const addPhotoResult = () => {
+    if (!photoResult) return;
+    photoResult.items.forEach((item) => {
+      addIngredient({
+        name: item.name,
+        brand: "KI-Schätzung",
+        calories: Math.round(item.calories / (item.amount ? parseFloat(item.amount) / 100 : 1)),
+        protein: item.protein / (item.amount ? parseFloat(item.amount) / 100 : 1),
+        carbs: item.carbs / (item.amount ? parseFloat(item.amount) / 100 : 1),
+        fat: item.fat / (item.amount ? parseFloat(item.amount) / 100 : 1),
+      });
+    });
+    setPhotoResult(null);
   };
 
   const updateGrams = (idx: number, grams: number) => {
@@ -127,6 +173,26 @@ export function AddMealModal({ onClose, onAdded }: Props) {
     onClose();
   };
 
+  const handleManualSave = async () => {
+    if (!manual.name || !manual.calories) return;
+    setSaving(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("meal_logs").insert({
+      user_id: user.id,
+      name: manual.name,
+      calories: Number(manual.calories) || 0,
+      protein: Number(manual.protein) || 0,
+      carbs: Number(manual.carbs) || 0,
+      fat: Number(manual.fat) || 0,
+      meal_type: mealType,
+    });
+    setSaving(false);
+    onAdded();
+    onClose();
+  };
+
   const s: Record<string, React.CSSProperties> = {
     input: {
       width: "100%", padding: "11px 14px",
@@ -167,6 +233,15 @@ export function AddMealModal({ onClose, onAdded }: Props) {
             <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "20px", cursor: "pointer" }}>×</button>
           </div>
 
+          {/* Mode tabs */}
+          <div style={{ display: "flex", gap: "6px", marginBottom: "12px" }}>
+            {[{ val: "search" as const, label: "🔍 Suchen" }, { val: "manual" as const, label: "✏️ Manuell" }].map((m) => (
+              <button key={m.val} onClick={() => setMode(m.val)} style={{ flex: 1, padding: "8px", fontSize: "12px", background: mode === m.val ? "var(--accent-bg)" : "var(--bg-hover)", border: mode === m.val ? "1px solid rgba(29,158,117,0.4)" : "1px solid var(--border)", borderRadius: "8px", color: mode === m.val ? "var(--accent-light)" : "var(--text-secondary)", cursor: "pointer" }}>
+                {m.label}
+              </button>
+            ))}
+          </div>
+
           {/* Meal type */}
           <div style={{ display: "flex", gap: "6px" }}>
             {mealTypes.map((t) => (
@@ -187,7 +262,41 @@ export function AddMealModal({ onClose, onAdded }: Props) {
         {/* Scrollable body */}
         <div style={{ overflowY: "auto", flex: 1, padding: "16px 20px" }}>
 
+          {/* Manual entry form */}
+          {mode === "manual" && (
+            <div>
+              <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "14px" }}>
+                Lebensmittel manuell eingeben — z.B. eigenes Rezept oder unbekanntes Produkt.
+              </p>
+              {[
+                { key: "name", label: "Name *", placeholder: "z.B. Omas Auflauf", type: "text" },
+                { key: "calories", label: "Kalorien (kcal) *", placeholder: "350", type: "number" },
+                { key: "protein", label: "Protein (g)", placeholder: "25", type: "number" },
+                { key: "carbs", label: "Kohlenhydrate (g)", placeholder: "40", type: "number" },
+                { key: "fat", label: "Fett (g)", placeholder: "10", type: "number" },
+              ].map((f) => (
+                <div key={f.key} style={{ marginBottom: "12px" }}>
+                  <label style={{ fontSize: "11px", color: "var(--text-secondary)", display: "block", marginBottom: "5px", letterSpacing: "0.3px" }}>{f.label}</label>
+                  <input
+                    type={f.type}
+                    placeholder={f.placeholder}
+                    value={manual[f.key as keyof typeof manual]}
+                    onChange={(e) => setManual((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                    style={s.input}
+                  />
+                </div>
+              ))}
+              <button
+                onClick={handleManualSave}
+                disabled={!manual.name || !manual.calories || saving}
+                style={{ width: "100%", padding: "13px", background: (!manual.name || !manual.calories) ? "var(--bg-hover)" : "var(--accent)", border: "none", borderRadius: "10px", color: (!manual.name || !manual.calories) ? "var(--text-muted)" : "#fff", fontSize: "14px", fontWeight: 500, cursor: "pointer", marginTop: "4px" }}>
+                {saving ? "Wird gespeichert…" : `${manual.calories || 0} kcal speichern`}
+              </button>
+            </div>
+          )}
+
           {/* Search + Barcode */}
+          {mode === "search" && (<>
           <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
             <div style={{ position: "relative", flex: 1 }}>
               <input
@@ -206,12 +315,52 @@ export function AddMealModal({ onClose, onAdded }: Props) {
             </div>
             <button
               onClick={() => setShowScanner(true)}
-              title="Barcode scannen"
-              style={{ padding: "0 14px", background: "var(--bg-hover)", border: "1px solid var(--border)", borderRadius: "10px", color: "var(--text-secondary)", fontSize: "20px", cursor: "pointer", flexShrink: 0 }}
+              style={{ padding: "0 10px", background: "var(--bg-hover)", border: "1px solid var(--border)", borderRadius: "10px", color: "var(--text-secondary)", cursor: "pointer", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px", minWidth: "52px" }}
             >
-              ◫
+              <span style={{ fontSize: "17px", lineHeight: 1 }}>📦</span>
+              <span style={{ fontSize: "8px", letterSpacing: "0.3px", color: "var(--text-muted)" }}>BARCODE</span>
             </button>
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              disabled={photoScanning}
+              style={{ padding: "0 10px", background: photoScanning ? "var(--accent-bg)" : "var(--bg-hover)", border: photoScanning ? "1px solid rgba(29,158,117,0.4)" : "1px solid var(--border)", borderRadius: "10px", color: "var(--text-secondary)", cursor: photoScanning ? "default" : "pointer", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px", minWidth: "52px" }}
+            >
+              <span style={{ fontSize: "17px", lineHeight: 1 }}>{photoScanning ? "⏳" : "🍽️"}</span>
+              <span style={{ fontSize: "8px", letterSpacing: "0.3px", color: "var(--text-muted)" }}>{photoScanning ? "KI…" : "FOTO"}</span>
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              style={{ display: "none" }}
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhotoScan(f); e.target.value = ""; }}
+            />
           </div>
+
+          {/* Photo scan result */}
+          {photoResult && (
+            <div style={{ background: "var(--g-green-dark)", border: "1px solid rgba(29,158,117,0.3)", borderRadius: "12px", padding: "14px", marginBottom: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                <p style={{ fontSize: "11px", color: "var(--accent-light)", letterSpacing: "1px", margin: 0 }}>🍽️ KI ERKENNUNG · {photoResult.confidence?.toUpperCase()}</p>
+                <button onClick={() => setPhotoResult(null)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "16px", cursor: "pointer" }}>×</button>
+              </div>
+              {photoResult.items.map((item, i) => (
+                <div key={i} style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "4px" }}>
+                  {item.name} <span style={{ color: "var(--text-muted)" }}>({item.amount})</span> · {item.calories} kcal · P: {item.protein}g
+                </div>
+              ))}
+              <div style={{ borderTop: "1px solid var(--border)", marginTop: "8px", paddingTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)" }}>
+                  {photoResult.total.calories} kcal · P: {photoResult.total.protein}g · KH: {photoResult.total.carbs}g · F: {photoResult.total.fat}g
+                </span>
+                <button onClick={addPhotoResult}
+                  style={{ padding: "6px 14px", background: "var(--accent)", border: "none", borderRadius: "8px", color: "#fff", fontSize: "12px", fontWeight: 500, cursor: "pointer" }}>
+                  + Hinzufügen
+                </button>
+              </div>
+            </div>
+          )}
 
           {showScanner && (
             <BarcodeScanner
@@ -361,10 +510,11 @@ export function AddMealModal({ onClose, onAdded }: Props) {
               </p>
             </div>
           )}
+          </>)}
         </div>
 
         {/* Footer */}
-        {ingredients.length > 0 && (
+        {mode === "search" && ingredients.length > 0 && (
           <div style={{ padding: "14px 20px", borderTop: "1px solid var(--border)", flexShrink: 0 }}>
             <button
               onClick={handleSave}

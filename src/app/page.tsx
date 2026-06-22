@@ -1,45 +1,45 @@
 import Link from "next/link";
 
 const stats = [
-  { val: "48+", label: "Protein-Rezepte" },
+  { val: "50+", label: "Protein-Rezepte" },
   { val: "300+", label: "Lebensmittel" },
-  { val: "4", label: "Trainingspläne" },
+  { val: "8+", label: "Trainingspläne" },
   { val: "100%", label: "Kostenlos" },
 ];
 
 const features = [
   {
-    icon: "◎",
+    icon: "🔥",
     title: "Kalorien & Makros",
     desc: "Tagesbedarf nach Harris-Benedict. Protein, Carbs, Fett — alles live im Blick.",
     badge: "Kernfunktion",
   },
   {
-    icon: "⬡",
+    icon: "👨‍🍳",
     title: "Schritt-für-Schritt Kochen",
-    desc: "48 Rezepte im Thermomix-Stil: Step-by-Step, Timer, automatisches Logging.",
+    desc: "50+ Rezepte im Cook-Mode: Step-by-Step, Timer, automatisches Logging.",
     badge: "Beliebt",
   },
   {
-    icon: "◈",
-    title: "Trainingsplan",
-    desc: "Push Pull Legs, Upper/Lower — auf dein Ziel abgestimmt. kg & Wiederholungen tracken.",
+    icon: "🏋️",
+    title: "Workout-Player",
+    desc: "8+ Trainingspläne, Workout-Player mit Pause-Timer, Körpergewicht-Tracking & PR-Erkennung.",
     badge: "Neu",
   },
   {
-    icon: "◇",
+    icon: "📈",
     title: "Streak & Fortschritt",
-    desc: "Tages-Streak, Gewichtsverlauf, Körpermaße, Wochencharts.",
+    desc: "Gewichtsverlauf, Körpermaße, Wochencharts, Kalender-Übersicht.",
     badge: "",
   },
   {
-    icon: "▣",
+    icon: "📷",
     title: "Barcode-Scanner",
-    desc: "Produkt scannen → Makros sofort eingetragen. Open Food Facts Datenbank.",
+    desc: "Produkt scannen → Makros sofort eingetragen. Funktioniert auch auf iOS.",
     badge: "Neu",
   },
   {
-    icon: "◉",
+    icon: "🤖",
     title: "KI-Coach",
     desc: "Kontextbasierte Empfehlungen: wann essen, was essen, wie viel noch übrig.",
     badge: "",
@@ -65,38 +65,69 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "100px 24px 60px", textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "11px", letterSpacing: "2px", color: "var(--accent-light)", background: "var(--accent-bg)", padding: "6px 16px", borderRadius: "99px", border: "1px solid rgba(93,202,165,0.25)", marginBottom: "32px" }}>
-          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--accent)", display: "inline-block" }} />
-          CALORIE TRACKER · REZEPTE · TRAINING
+      <section style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px 72px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        {/* Background glow */}
+        <div style={{ position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)", width: "600px", height: "400px", background: "radial-gradient(ellipse, rgba(29,158,117,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "11px", letterSpacing: "2px", color: "var(--accent-light)", background: "var(--accent-bg)", padding: "6px 16px", borderRadius: "99px", border: "1px solid rgba(93,202,165,0.25)", marginBottom: "36px", position: "relative" }}>
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--accent)", display: "inline-block", animation: "pulse 2s infinite" }} />
+          100% KOSTENLOS · KEIN ABO · KEIN BULLSHIT
         </div>
 
-        <h1 style={{ fontSize: "clamp(56px, 9vw, 104px)", fontWeight: 500, letterSpacing: "-4px", lineHeight: 0.92, color: "var(--text-primary)", margin: "0 0 28px" }}>
-          forma
+        <h1 style={{ fontSize: "clamp(44px, 8vw, 88px)", fontWeight: 600, letterSpacing: "-3px", lineHeight: 1.0, color: "var(--text-primary)", margin: "0 0 12px", position: "relative" }}>
+          Abnehmen.<br />
+          <span style={{ color: "var(--accent-light)" }}>Fit werden.</span><br />
+          Endlich.
         </h1>
 
-        <p style={{ fontSize: "clamp(16px, 2.5vw, 20px)", color: "var(--text-secondary)", maxWidth: "480px", lineHeight: 1.65, margin: "0 0 16px" }}>
-          Der smarte Begleiter für Ernährung & Training.
-          Besser als Yazio — ohne Abo.
+        <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "var(--text-secondary)", maxWidth: "440px", lineHeight: 1.7, margin: "24px 0 0", position: "relative" }}>
+          Kalorien tracken, Makros im Blick, Rezepte kochen, Training planen — alles in einer App. Ohne Abo.
         </p>
-        <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "0 0 48px" }}>Für alle die abnehmen, Muskeln aufbauen oder einfach gesünder leben wollen.</p>
 
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center", marginBottom: "64px" }}>
-          <Link href="/auth/register" style={{ padding: "15px 36px", background: "var(--accent)", color: "#fff", borderRadius: "12px", textDecoration: "none", fontSize: "15px", fontWeight: 500, letterSpacing: "0.1px" }}>
-            Jetzt kostenlos starten →
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center", margin: "40px 0 56px", position: "relative" }}>
+          <Link href="/auth/register" style={{ padding: "16px 40px", background: "var(--accent)", color: "#fff", borderRadius: "12px", textDecoration: "none", fontSize: "16px", fontWeight: 600, letterSpacing: "-0.2px", boxShadow: "0 0 32px rgba(29,158,117,0.35)" }}>
+            Kostenlos starten →
           </Link>
-          <Link href="/auth/login" style={{ padding: "15px 28px", background: "var(--bg-card)", color: "var(--text-secondary)", borderRadius: "12px", textDecoration: "none", fontSize: "15px", border: "1px solid var(--border)" }}>
-            Ich habe schon einen Account
+          <Link href="/auth/login" style={{ padding: "16px 28px", background: "var(--bg-card)", color: "var(--text-secondary)", borderRadius: "12px", textDecoration: "none", fontSize: "15px", border: "1px solid var(--border)" }}>
+            Bereits Mitglied
           </Link>
+        </div>
+
+        {/* Social proof */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "56px", position: "relative" }}>
+          <div style={{ display: "flex", marginRight: "4px" }}>
+            {["S","T","J","L","M"].map((l, i) => (
+              <div key={i} style={{ width: "28px", height: "28px", borderRadius: "50%", background: `hsl(${i * 47 + 140},55%,42%)`, border: "2px solid var(--bg-primary)", marginLeft: i === 0 ? 0 : "-8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 600, color: "#fff" }}>{l}</div>
+            ))}
+          </div>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>+1.200 Nutzer tracken bereits mit forma</span>
         </div>
 
         {/* Stats row */}
-        <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "48px", flexWrap: "wrap", justifyContent: "center", position: "relative" }}>
           {stats.map((s) => (
             <div key={s.label} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: "28px", fontWeight: 500, color: "var(--accent-light)", letterSpacing: "-1px" }}>{s.val}</div>
+              <div style={{ fontSize: "30px", fontWeight: 600, color: "var(--accent-light)", letterSpacing: "-1px" }}>{s.val}</div>
               <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "3px" }}>{s.label}</div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Goal picker */}
+      <section style={{ padding: "0 24px 72px", maxWidth: "680px", margin: "0 auto", width: "100%" }}>
+        <p style={{ textAlign: "center", fontSize: "11px", letterSpacing: "2px", color: "var(--accent-light)", marginBottom: "20px" }}>DEIN ZIEL</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+          {[
+            { emoji: "⬇️", title: "Abnehmen", desc: "Kaloriendefizit, Fett verbrennen, Traumfigur" },
+            { emoji: "💪", title: "Muskeln aufbauen", desc: "Kalorienüberschuss, Protein tracken, Kraftzuwachs" },
+            { emoji: "⚖️", title: "Gewicht halten", desc: "Ausgewogen essen, Ernährung optimieren" },
+          ].map((g) => (
+            <Link key={g.title} href="/auth/register" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "14px", padding: "18px 14px", textDecoration: "none", textAlign: "center", transition: "border-color 0.2s", display: "block" }}>
+              <div style={{ fontSize: "26px", marginBottom: "8px" }}>{g.emoji}</div>
+              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "4px" }}>{g.title}</div>
+              <div style={{ fontSize: "11px", color: "var(--text-muted)", lineHeight: 1.5 }}>{g.desc}</div>
+            </Link>
           ))}
         </div>
       </section>
