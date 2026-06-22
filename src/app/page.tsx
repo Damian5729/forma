@@ -213,7 +213,11 @@ export default function LandingPage() {
 
       <footer style={{ padding: "24px 32px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
         <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-muted)" }}>forma</span>
-        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>© 2025 · Intelligente Ernährung</span>
+        <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+          <Link href="/legal/agb" style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "none" }}>AGB</Link>
+          <Link href="/legal/datenschutz" style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "none" }}>Datenschutz</Link>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>© 2025</span>
+        </div>
       </footer>
     </main>
   );

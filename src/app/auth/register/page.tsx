@@ -12,6 +12,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleOAuth = async (provider: "google" | "apple") => {
     const supabase = createClient();
@@ -25,6 +26,7 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!termsAccepted) { setError("Bitte stimme den AGB und der Datenschutzerklärung zu."); return; }
     setLoading(true);
     setError("");
 
@@ -166,6 +168,23 @@ export default function Register() {
               required
             />
           </div>
+
+          {/* AGB Checkbox */}
+          <label style={{ display: "flex", alignItems: "flex-start", gap: "10px", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              style={{ marginTop: "2px", accentColor: "var(--accent)", width: "16px", height: "16px", flexShrink: 0 }}
+            />
+            <span style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              Ich stimme den{" "}
+              <a href="/legal/agb" target="_blank" style={{ color: "var(--accent-light)", textDecoration: "underline" }}>AGB</a>
+              {" "}und der{" "}
+              <a href="/legal/datenschutz" target="_blank" style={{ color: "var(--accent-light)", textDecoration: "underline" }}>Datenschutzerklärung</a>
+              {" "}zu. Meine Körper- und Gesundheitsdaten werden nicht an Dritte weitergegeben.
+            </span>
+          </label>
 
           {error && (
             <p style={{ fontSize: "13px", color: "#E24B4A", margin: 0 }}>{error}</p>
