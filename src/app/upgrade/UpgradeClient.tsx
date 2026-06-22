@@ -28,10 +28,19 @@ export function UpgradeClient({ isPro }: { isPro: boolean }) {
 
   const handleCheckout = async () => {
     setLoading(true);
-    const res = await fetch("/api/checkout", { method: "POST" });
-    const { url } = await res.json();
-    if (url) window.location.href = url;
-    else setLoading(false);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Fehler beim Checkout: " + (data.error ?? "Unbekannter Fehler"));
+        setLoading(false);
+      }
+    } catch (err) {
+      alert("Netzwerkfehler: " + String(err));
+      setLoading(false);
+    }
   };
 
   return (

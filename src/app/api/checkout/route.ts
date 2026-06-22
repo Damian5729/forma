@@ -30,15 +30,18 @@ export async function POST(req: NextRequest) {
 
   const origin = req.headers.get("origin") ?? "https://forma-two-eta.vercel.app";
 
-  const session = await stripe.checkout.sessions.create({
-    customer: customerId,
-    mode: "subscription",
-    line_items: [{ price: PRICE_ID, quantity: 1 }],
-    success_url: `${origin}/dashboard?upgrade=success`,
-    cancel_url: `${origin}/upgrade`,
-    allow_promotion_codes: true,
-    invoice_creation: { enabled: true },
-  });
-
-  return NextResponse.json({ url: session.url });
+  try {
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      mode: "subscription",
+      line_items: [{ price: PRICE_ID, quantity: 1 }],
+      success_url: `${origin}/dashboard?upgrade=success`,
+      cancel_url: `${origin}/upgrade`,
+      allow_promotion_codes: true,
+    });
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    console.error("Stripe checkout error:", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 }
