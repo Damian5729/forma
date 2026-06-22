@@ -15,6 +15,7 @@ import { MilestoneToast } from "@/components/MilestoneToast";
 import { RunningWidget } from "@/components/RunningWidget";
 import { SupplementWidget } from "@/components/SupplementWidget";
 import { SplashScreen } from "@/components/SplashScreen";
+import { OnboardingTour } from "@/components/OnboardingTour";
 
 interface MealLog {
   id: string;
@@ -217,6 +218,7 @@ export function DashboardClient({
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
       <SplashScreen userName={userName} />
+      <OnboardingTour />
       <Nav active="/dashboard" userName={userName} />
 
       {milestones.length > 0 && (
