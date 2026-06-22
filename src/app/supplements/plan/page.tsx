@@ -12,7 +12,7 @@ export default async function SupplementPlanPage() {
   const today = new Date().toISOString().split("T")[0];
 
   const [{ data: profile }, { data: plan }, { data: completions }] = await Promise.all([
-    supabase.from("user_profiles").select("name").eq("id", user.id).single(),
+    supabase.from("user_profiles").select("name, subscription_status").eq("id", user.id).single(),
     supabase.from("supplement_plans").select("*").eq("user_id", user.id).order("time_of_day").order("created_at"),
     supabase.from("supplement_logs").select("supplement_id").eq("user_id", user.id).eq("logged_date", today),
   ]);
@@ -45,6 +45,7 @@ export default async function SupplementPlanPage() {
           initialPlan={plan ?? []}
           todayCompletions={(completions ?? []).map((c) => ({ supplement_id: c.supplement_id }))}
           today={today}
+          isPro={profile?.subscription_status === "pro"}
         />
       </main>
     </div>

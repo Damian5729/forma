@@ -22,6 +22,7 @@ interface Props {
   initialPlan: Supplement[];
   todayCompletions: CompletionKey[];
   today: string;
+  isPro?: boolean;
 }
 
 const TIME_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
@@ -46,7 +47,7 @@ const COMMON_SUPPLEMENTS = [
   { name: "Probiotika",   emoji: "🦠",  dose: "1 Kap.", time: "morning" },
 ];
 
-export function PlanClient({ userId, initialPlan, todayCompletions, today }: Props) {
+export function PlanClient({ userId, initialPlan, todayCompletions, today, isPro = false }: Props) {
   const [plan, setPlan] = useState<Supplement[]>(initialPlan);
   const [done, setDone] = useState<Set<string>>(new Set(todayCompletions.map((c) => c.supplement_id)));
   const [showAdd, setShowAdd] = useState(false);
@@ -146,10 +147,17 @@ export function PlanClient({ userId, initialPlan, todayCompletions, today }: Pro
           style={{ flex: 1, padding: "10px", background: "var(--accent-bg)", border: "1px solid rgba(29,158,117,0.3)", borderRadius: "10px", color: "var(--accent-light)", fontSize: "13px", fontWeight: 500, cursor: "pointer" }}>
           + Supplement hinzufügen
         </button>
-        <button onClick={() => setShowBloodtest(!showBloodtest)}
-          style={{ flex: 1, padding: "10px", background: "linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05))", border: "1px solid rgba(139,92,246,0.3)", borderRadius: "10px", color: "#A78BFA", fontSize: "13px", fontWeight: 500, cursor: "pointer" }}>
-          🩸 Blutbild scannen
-        </button>
+        {isPro ? (
+          <button onClick={() => setShowBloodtest(!showBloodtest)}
+            style={{ flex: 1, padding: "10px", background: "linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05))", border: "1px solid rgba(139,92,246,0.3)", borderRadius: "10px", color: "#A78BFA", fontSize: "13px", fontWeight: 500, cursor: "pointer" }}>
+            🩸 Blutbild scannen
+          </button>
+        ) : (
+          <a href="/upgrade"
+            style={{ flex: 1, padding: "10px", background: "linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05))", border: "1px solid rgba(245,158,11,0.3)", borderRadius: "10px", color: "#F59E0B", fontSize: "13px", fontWeight: 500, cursor: "pointer", textAlign: "center", textDecoration: "none", display: "block" }}>
+            🩸 Blutbild scannen <span style={{ fontSize: "10px", background: "rgba(245,158,11,0.2)", padding: "1px 6px", borderRadius: "99px", marginLeft: "4px" }}>PRO</span>
+          </a>
+        )}
       </div>
 
       {/* Add form */}
