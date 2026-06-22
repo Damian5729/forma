@@ -14,6 +14,7 @@ import { StreakBadge } from "@/components/StreakBadge";
 import { MilestoneToast } from "@/components/MilestoneToast";
 import { RunningWidget } from "@/components/RunningWidget";
 import { SupplementWidget } from "@/components/SupplementWidget";
+import { SplashScreen } from "@/components/SplashScreen";
 
 interface MealLog {
   id: string;
@@ -215,6 +216,7 @@ export function DashboardClient({
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <SplashScreen userName={userName} />
       <Nav active="/dashboard" userName={userName} />
 
       {milestones.length > 0 && (
