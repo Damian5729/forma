@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
+import { ProPaywall } from "@/components/ProPaywall";
 import { RUNNING_PLANS } from "@/lib/running-plans";
 import Link from "next/link";
 
@@ -23,7 +24,14 @@ export default async function RunningPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const userName = user.user_metadata?.name ?? user.email ?? "User";
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("name, subscription_status")
+    .eq("id", user.id)
+    .single();
+
+  const isPro = profile?.subscription_status === "pro";
+  const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
@@ -35,6 +43,15 @@ export default async function RunningPage() {
             ← Fitness
           </Link>
         </div>
+
+        {!isPro && (
+          <ProPaywall
+            icon="🏃"
+            title="Laufpläne & Einzelläufe"
+            description="Alle Laufpläne, strukturierten Einheiten und Einzelläufe sind exklusiv für forma Pro Nutzer."
+          />
+        )}
+        {isPro && (<>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "28px", flexWrap: "wrap", gap: "12px" }}>
           <div>
@@ -121,6 +138,7 @@ export default async function RunningPage() {
             </Link>
           ))}
         </div>
+        </>)}
       </main>
     </div>
   );

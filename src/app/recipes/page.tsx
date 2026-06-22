@@ -4,6 +4,8 @@ import { Nav } from "@/components/Nav";
 import { DeleteRecipeButton } from "./DeleteRecipeButton";
 import Link from "next/link";
 
+const FREE_RECIPE_LIMIT = 10;
+
 const ALL_TAGS = ["High-Protein", "Low-Carb", "Vegan", "Vegetarisch", "Frühstück", "Mittagessen", "Abendessen", "Snack", "Meal-Prep", "Schnell", "Omega-3"];
 
 export default async function Recipes({ searchParams }: { searchParams: Promise<{ tag?: string; q?: string; mine?: string }> }) {
@@ -11,6 +13,13 @@ export default async function Recipes({ searchParams }: { searchParams: Promise<
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("name, subscription_status")
+    .eq("id", user.id)
+    .single();
+  const isPro = profile?.subscription_status === "pro";
 
   let query = supabase.from("recipes").select("id, title, calories, protein, carbs, fat, duration, tags, description, user_id").order("protein", { ascending: false });
   if (mine === "1") query = query.eq("user_id", user.id);
@@ -24,7 +33,10 @@ export default async function Recipes({ searchParams }: { searchParams: Promise<
   const { data: favRows } = await supabase.from("recipe_favorites").select("recipe_id").eq("user_id", user.id);
   const favSet = new Set((favRows ?? []).map((r: { recipe_id: string }) => r.recipe_id));
 
-  const userName = user.user_metadata?.name ?? user.email ?? "User";
+  const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
+
+  const visibleRecipes = isPro ? (recipes ?? []) : (recipes ?? []).slice(0, FREE_RECIPE_LIMIT);
+  const lockedCount = isPro ? 0 : Math.max(0, (recipes ?? []).length - FREE_RECIPE_LIMIT);
 
   function cardGradient(tags: string[], title: string): string {
     const t = title.toLowerCase();
@@ -158,7 +170,7 @@ export default async function Recipes({ searchParams }: { searchParams: Promise<
         )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "14px" }}>
-          {(recipes ?? []).map((r, i) => {
+          {visibleRecipes.map((r, i) => {
             const tags = r.tags as string[];
             const bg = cardGradient(tags, r.title);
             const emoji = cardEmoji(tags, r.title);
@@ -219,6 +231,21 @@ export default async function Recipes({ searchParams }: { searchParams: Promise<
             );
           })}
         </div>
+
+        {lockedCount > 0 && (
+          <div style={{ marginTop: "32px", background: "linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.03))", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "16px", padding: "28px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: "28px", marginBottom: "10px" }}>🍳</div>
+            <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)", margin: "0 0 6px" }}>
+              +{lockedCount} weitere Rezepte mit forma Pro
+            </p>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "0 0 20px" }}>
+              Alle 50+ Rezepte mit Nährwerten, Kochanleitungen und Einkaufslisten freischalten.
+            </p>
+            <Link href="/upgrade" style={{ display: "inline-block", padding: "11px 28px", background: "linear-gradient(135deg,#F59E0B,#EF9F27)", color: "#000", borderRadius: "10px", textDecoration: "none", fontSize: "14px", fontWeight: 700 }}>
+              Pro freischalten →
+            </Link>
+          </div>
+        )}
       </main>
     </div>
   );

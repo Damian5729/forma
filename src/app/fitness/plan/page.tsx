@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { TRAINING_PLANS } from "@/lib/training-plans";
 import { HOME_TRAINING_PLANS } from "@/lib/training-plans-home";
 import Link from "next/link";
+import { ProPaywall } from "@/components/ProPaywall";
 
 const ALL_PLANS = [...TRAINING_PLANS, ...HOME_TRAINING_PLANS];
 
@@ -59,9 +60,11 @@ export default async function PlansPage({
 
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("goal, activity, name, daily_calories, protein_goal")
+    .select("goal, activity, name, daily_calories, protein_goal, subscription_status")
     .eq("id", user.id)
     .single();
+
+  const isPro = profile?.subscription_status === "pro";
 
   const params = await searchParams;
   const activeFilter = params?.goal ?? "";
@@ -208,26 +211,46 @@ export default async function PlansPage({
               WEITERE PLÄNE
             </h2>
             <div className="grid-2col">
-              {others.map((plan) => (
-                <Link key={plan.id} href={`/fitness/plan/${plan.id}`} style={{ textDecoration: "none" }}>
-                  <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "20px", height: "100%" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <span style={{ fontSize: "24px" }}>{goalIcon[plan.goal]}</span>
-                        {plan.location === "Zuhause" && <span style={{ fontSize: "14px", alignSelf: "center" }}>🏠</span>}
+              {others.map((plan) =>
+                isPro ? (
+                  <Link key={plan.id} href={`/fitness/plan/${plan.id}`} style={{ textDecoration: "none" }}>
+                    <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "20px", height: "100%" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                        <div style={{ display: "flex", gap: "6px" }}>
+                          <span style={{ fontSize: "24px" }}>{goalIcon[plan.goal]}</span>
+                          {plan.location === "Zuhause" && <span style={{ fontSize: "14px", alignSelf: "center" }}>🏠</span>}
+                        </div>
+                        <span style={{ fontSize: "10px", color: levelColor[plan.level], background: `${levelColor[plan.level]}20`, padding: "3px 8px", borderRadius: "99px" }}>
+                          {plan.level}
+                        </span>
                       </div>
-                      <span style={{ fontSize: "10px", color: levelColor[plan.level], background: `${levelColor[plan.level]}20`, padding: "3px 8px", borderRadius: "99px" }}>
-                        {plan.level}
+                      <h3 style={{ fontSize: "15px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "6px" }}>{plan.name}</h3>
+                      <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "12px" }}>{plan.description}</p>
+                      <span style={{ fontSize: "11px", color: plan.location === "Zuhause" ? "#378ADD" : "var(--text-muted)" }}>
+                        {plan.location === "Zuhause" ? "🏠 Zuhause" : "🏋️ Gym"}
                       </span>
                     </div>
-                    <h3 style={{ fontSize: "15px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "6px" }}>{plan.name}</h3>
-                    <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "12px" }}>{plan.description}</p>
-                    <span style={{ fontSize: "11px", color: plan.location === "Zuhause" ? "#378ADD" : "var(--text-muted)" }}>
-                      {plan.location === "Zuhause" ? "🏠 Zuhause" : "🏋️ Gym"}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ) : (
+                  <Link key={plan.id} href="/upgrade" style={{ textDecoration: "none" }}>
+                    <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "20px", height: "100%", position: "relative", overflow: "hidden" }}>
+                      <div style={{ filter: "blur(2px)", opacity: 0.4 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                          <span style={{ fontSize: "24px" }}>{goalIcon[plan.goal]}</span>
+                          <span style={{ fontSize: "10px", color: levelColor[plan.level], background: `${levelColor[plan.level]}20`, padding: "3px 8px", borderRadius: "99px" }}>{plan.level}</span>
+                        </div>
+                        <h3 style={{ fontSize: "15px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "6px" }}>{plan.name}</h3>
+                        <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5 }}>{plan.description}</p>
+                      </div>
+                      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(12,12,14,0.6)", borderRadius: "16px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#F59E0B", background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", padding: "5px 14px", borderRadius: "99px", letterSpacing: "1px" }}>
+                          PRO FREISCHALTEN →
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              )}
             </div>
           </>
         )}

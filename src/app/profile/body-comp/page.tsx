@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import Link from "next/link";
 import { BodyCompClient } from "./BodyCompClient";
+import { ProPaywall } from "@/components/ProPaywall";
 
 export default async function BodyCompPage() {
   const supabase = await createClient();
@@ -11,12 +12,13 @@ export default async function BodyCompPage() {
 
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("name, gender, height, weight, neck_cm, waist_cm, hip_cm, body_fat_pct")
+    .select("name, gender, height, weight, neck_cm, waist_cm, hip_cm, body_fat_pct, subscription_status")
     .eq("id", user.id)
     .single();
 
   if (!profile?.weight || !profile?.height) redirect("/profile");
 
+  const isPro = profile?.subscription_status === "pro";
   const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
 
   return (
@@ -29,23 +31,33 @@ export default async function BodyCompPage() {
           <h1 style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)", marginTop: "12px" }}>
             Körperzusammensetzung
           </h1>
-          <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "4px" }}>
-            {profile.weight} kg · {profile.height} cm · BMI {Math.round((profile.weight / ((profile.height / 100) ** 2)) * 10) / 10}
-          </p>
         </div>
 
-        <BodyCompClient
-          userId={user.id}
-          gender={profile.gender ?? "m"}
-          height={profile.height}
-          weight={profile.weight}
-          saved={{
-            neck_cm: profile.neck_cm ?? null,
-            waist_cm: profile.waist_cm ?? null,
-            hip_cm: profile.hip_cm ?? null,
-            body_fat_pct: profile.body_fat_pct ?? null,
-          }}
-        />
+        {!isPro ? (
+          <ProPaywall
+            icon="📊"
+            title="Körperzusammensetzung & BMI"
+            description="Körperfettanteil, BMI-Analyse und detaillierte Körpermessungen sind exklusiv für forma Pro."
+          />
+        ) : (
+          <>
+            <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "-12px", marginBottom: "24px" }}>
+              {profile.weight} kg · {profile.height} cm · BMI {Math.round((profile.weight / ((profile.height / 100) ** 2)) * 10) / 10}
+            </p>
+            <BodyCompClient
+              userId={user.id}
+              gender={profile.gender ?? "m"}
+              height={profile.height}
+              weight={profile.weight}
+              saved={{
+                neck_cm: profile.neck_cm ?? null,
+                waist_cm: profile.waist_cm ?? null,
+                hip_cm: profile.hip_cm ?? null,
+                body_fat_pct: profile.body_fat_pct ?? null,
+              }}
+            />
+          </>
+        )}
       </main>
     </div>
   );
