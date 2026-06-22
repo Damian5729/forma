@@ -18,7 +18,7 @@ export default async function BodyCompPage() {
 
   if (!profile?.weight || !profile?.height) redirect("/profile");
 
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
   const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
 
   return (

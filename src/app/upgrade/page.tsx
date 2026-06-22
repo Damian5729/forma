@@ -15,7 +15,7 @@ export default async function UpgradePage() {
     .single();
 
   const userName = profile?.name ?? user.email ?? "User";
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>

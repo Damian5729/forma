@@ -76,7 +76,7 @@ export default async function Profile() {
         </div>
 
         {/* Pro status card */}
-        {profile?.subscription_status === "pro" ? (
+        {profile?.subscription_status?.toLowerCase() === "pro" ? (
           <div style={{ background: "linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04))", border: "1px solid rgba(245,158,11,0.3)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontSize: "22px" }}>👑</span>
             <div>

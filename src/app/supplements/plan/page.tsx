@@ -18,7 +18,7 @@ export default async function SupplementPlanPage() {
     supabase.from("supplement_logs").select("supplement_id").eq("user_id", user.id).eq("logged_date", today),
   ]);
 
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
   const userName = profile?.name ?? user.user_metadata?.name ?? user.email ?? "User";
 
   return (

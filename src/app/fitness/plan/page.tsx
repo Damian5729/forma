@@ -64,7 +64,7 @@ export default async function PlansPage({
     .eq("id", user.id)
     .single();
 
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
 
   const params = await searchParams;
   const activeFilter = params?.goal ?? "";

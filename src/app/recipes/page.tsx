@@ -19,7 +19,7 @@ export default async function Recipes({ searchParams }: { searchParams: Promise<
     .select("name, subscription_status")
     .eq("id", user.id)
     .single();
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
 
   let query = supabase.from("recipes").select("id, title, calories, protein, carbs, fat, duration, tags, description, user_id").order("protein", { ascending: false });
   if (mine === "1") query = query.eq("user_id", user.id);

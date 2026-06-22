@@ -30,7 +30,7 @@ export function AdminClient() {
   }, []);
 
   const toggle = async (userId: string, currentStatus: string) => {
-    const newStatus = currentStatus === "pro" ? "free" : "pro";
+    const newStatus = currentStatus.toLowerCase() === "pro" ? "free" : "pro";
     setToggling(userId);
     await fetch("/api/admin/users", {
       method: "POST",
@@ -74,26 +74,26 @@ export function AdminClient() {
                 <span style={{
                   fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
                   padding: "3px 10px", borderRadius: "99px",
-                  background: u.subscription_status === "pro"
+                  background: u.subscription_status.toLowerCase() === "pro"
                     ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.06)",
-                  color: u.subscription_status === "pro" ? "#F59E0B" : "var(--text-muted)",
-                  border: `1px solid ${u.subscription_status === "pro" ? "rgba(245,158,11,0.3)" : "var(--border)"}`,
+                  color: u.subscription_status.toLowerCase() === "pro" ? "#F59E0B" : "var(--text-muted)",
+                  border: `1px solid ${u.subscription_status.toLowerCase() === "pro" ? "rgba(245,158,11,0.3)" : "var(--border)"}`,
                 }}>
-                  {u.subscription_status === "pro" ? "PRO" : "FREE"}
+                  {u.subscription_status.toLowerCase() === "pro" ? "PRO" : "FREE"}
                 </span>
                 <button
                   onClick={() => toggle(u.id, u.subscription_status)}
                   disabled={toggling === u.id}
                   style={{
                     padding: "7px 16px", borderRadius: "8px", border: "none",
-                    background: u.subscription_status === "pro"
+                    background: u.subscription_status.toLowerCase() === "pro"
                       ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg,#F59E0B,#EF9F27)",
-                    color: u.subscription_status === "pro" ? "var(--text-secondary)" : "#000",
+                    color: u.subscription_status.toLowerCase() === "pro" ? "var(--text-secondary)" : "#000",
                     fontSize: "13px", fontWeight: 600, cursor: "pointer",
                     opacity: toggling === u.id ? 0.5 : 1,
                   }}
                 >
-                  {toggling === u.id ? "..." : u.subscription_status === "pro" ? "→ Free" : "→ Pro"}
+                  {toggling === u.id ? "..." : u.subscription_status.toLowerCase() === "pro" ? "→ Free" : "→ Pro"}
                 </button>
               </div>
             </div>

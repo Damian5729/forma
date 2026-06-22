@@ -27,7 +27,7 @@ export default async function CoachPage() {
     proteinGoal: profile?.protein_goal ?? undefined,
   };
 
-  const isPro = profile?.subscription_status === "pro";
+  const isPro = profile?.subscription_status?.toLowerCase() === "pro";
 
   if (!isPro) {
     return (
