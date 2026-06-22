@@ -250,6 +250,21 @@ export function DashboardClient({
             </h1>
             {streak > 0 && <StreakBadge streak={streak} />}
           </div>
+          <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "6px", lineHeight: 1.5 }}>
+            {hour >= 6 && hour < 11
+              ? streak > 0
+                ? `${streak} Tage am Stück — heute auch nicht vergessen! 🔥`
+                : "Fang stark in den Tag. Was kommt heute auf den Teller?"
+              : hour >= 11 && hour < 14
+              ? "Mittagszeit! Hast du schon was gegessen heute?"
+              : hour >= 14 && hour < 17
+              ? "Wie läuft dein Tag so? Alles eingetragen?"
+              : hour >= 17 && hour < 20
+              ? "Wie war dein Tag? Trag noch alles ein was noch fehlt."
+              : hour >= 20 && hour < 22
+              ? "Fast geschafft — noch den Abend eintragen und du bist durch 💪"
+              : "Noch so spät wach? Morgen frisch durchstarten 🌙"}
+          </p>
         </div>
 
         {/* Calorie ring + macro bars */}
