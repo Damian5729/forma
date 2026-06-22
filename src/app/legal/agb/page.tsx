@@ -11,7 +11,7 @@ export default function AGBPage() {
       {[
         {
           title: "1. Geltungsbereich",
-          text: "Diese Allgemeinen Geschäftsbedingungen gelten für die Nutzung der App und des Dienstes forma (nachfolgend „forma" oder „wir"), betrieben von Damian Günter. Mit der Registrierung stimmst du diesen AGB zu.",
+          text: 'Diese Allgemeinen Geschäftsbedingungen gelten für die Nutzung der App und des Dienstes forma (nachfolgend "forma" oder "wir"), betrieben von Damian Günter. Mit der Registrierung stimmst du diesen AGB zu.',
         },
         {
           title: "2. Leistungsbeschreibung",
