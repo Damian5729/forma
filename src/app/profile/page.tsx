@@ -101,6 +101,14 @@ export default async function Profile() {
         {/* Form */}
         <ProfileForm userId={user.id} initial={profile} />
 
+        {user.email === "damian.gunter1@gmail.com" && (
+          <Link href="/admin" style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", borderRadius: "12px", padding: "12px 16px", marginTop: "12px", textDecoration: "none" }}>
+            <span style={{ fontSize: "16px" }}>🛡️</span>
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}>Admin-Panel</span>
+            <span style={{ marginLeft: "auto", fontSize: "13px", color: "var(--text-muted)" }}>→</span>
+          </Link>
+        )}
+
         <LogoutButton />
       </main>
     </div>
