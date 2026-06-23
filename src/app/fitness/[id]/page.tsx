@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { EXERCISES } from "@/lib/exercises";
 import Link from "next/link";
-import { LogExerciseButton } from "./LogExerciseButton";
+import { SingleExercisePlayer } from "./SingleExercisePlayer";
 
 const difficultyColor: Record<string, string> = {
   Anfänger: "#1D9E75",
@@ -20,13 +20,18 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
   const exercise = EXERCISES.find((e) => e.id === id);
   if (!exercise) notFound();
 
-  const { data: history } = await supabase
-    .from("workout_logs")
-    .select("sets, logged_at")
-    .eq("user_id", user.id)
-    .eq("exercise_name", exercise.name)
-    .order("logged_at", { ascending: false })
-    .limit(5);
+  const [{ data: history }, { data: profile }] = await Promise.all([
+    supabase.from("workout_logs").select("sets, logged_at")
+      .eq("user_id", user.id)
+      .eq("exercise_name", exercise.name)
+      .order("logged_at", { ascending: false })
+      .limit(5),
+    supabase.from("user_profiles").select("weight").eq("id", user.id).single(),
+  ]);
+
+  const lastSession = history && history.length > 0
+    ? { sets: history[0].sets as { reps: number; weight: number }[], date: history[0].logged_at }
+    : null;
 
   const userName = user.user_metadata?.name ?? user.email ?? "User";
 
@@ -114,7 +119,13 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
                 ))}
               </ul>
             </div>
-            <LogExerciseButton exerciseName={exercise.name} userId={user.id} />
+            <SingleExercisePlayer
+              exerciseId={exercise.id}
+              exerciseName={exercise.name}
+              userId={user.id}
+              userWeight={profile?.weight ?? null}
+              lastSession={lastSession}
+            />
           </div>
         </div>
 
