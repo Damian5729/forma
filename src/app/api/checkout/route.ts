@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const PRICE_ID = "price_1Tl4fXHLHYPrWbtSKn1OsCM8";
+const PRICE_ID = "price_1TlQQgHu2pMPQ4HEFabyLy0B";
 
 export async function POST(req: NextRequest) {
   try {

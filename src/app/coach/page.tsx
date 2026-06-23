@@ -42,7 +42,7 @@ export default async function CoachPage() {
             Personalisierte Empfehlungen, Makro-Analyse und smarte Ernährungstipps — nur mit forma Pro.
           </p>
           <Link href="/upgrade" style={{ padding: "14px 36px", background: "linear-gradient(135deg,#F59E0B,#EF9F27)", color: "#000", borderRadius: "12px", textDecoration: "none", fontSize: "15px", fontWeight: 700, boxShadow: "0 4px 20px rgba(245,158,11,0.35)" }}>
-            Pro freischalten — 4,99€/Monat →
+            Pro freischalten — 14,99€/Monat →
           </Link>
           <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "12px" }}>Jederzeit kündbar · Rechnung per E-Mail</p>
         </main>

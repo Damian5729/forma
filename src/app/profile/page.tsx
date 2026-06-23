@@ -89,7 +89,7 @@ export default async function Profile() {
             <span style={{ fontSize: "22px" }}>⭐</span>
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: "13px", fontWeight: 500, color: "#F59E0B", margin: 0 }}>forma Pro freischalten</p>
-              <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>KI-Coach · Blutbild · alle Features · 4,99€/Monat</p>
+              <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>KI-Coach · Blutbild · alle Features · 14,99€/Monat</p>
             </div>
             <span style={{ color: "#F59E0B", fontSize: "16px" }}>→</span>
           </Link>

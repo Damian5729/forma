@@ -61,7 +61,7 @@ export function UpgradeClient({ isPro }: { isPro: boolean }) {
               ✦ FORMA PRO
             </div>
             <h1 style={{ fontSize: "30px", fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-1px", margin: "0 0 10px" }}>
-              Alles freischalten.<br />4,99€ im Monat.
+              Alles freischalten.<br />14,99€ im Monat.
             </h1>
             <p style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0 }}>Kündige jederzeit. Keine versteckten Kosten.</p>
           </div>
@@ -98,7 +98,7 @@ export function UpgradeClient({ isPro }: { isPro: boolean }) {
             disabled={loading}
             style={{ width: "100%", padding: "16px", background: loading ? "var(--bg-hover)" : "linear-gradient(135deg,#F59E0B,#EF9F27)", border: "none", borderRadius: "12px", color: "#000", fontSize: "16px", fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", letterSpacing: "-0.2px", boxShadow: loading ? "none" : "0 4px 24px rgba(245,158,11,0.35)" }}
           >
-            {loading ? "Wird geladen..." : "forma Pro starten — 4,99€/Monat →"}
+            {loading ? "Wird geladen..." : "forma Pro starten — 14,99€/Monat →"}
           </button>
           <p style={{ fontSize: "11px", color: "var(--text-muted)", textAlign: "center", marginTop: "10px" }}>
             Zahlung via Stripe · Rechnung per E-Mail · Jederzeit kündbar

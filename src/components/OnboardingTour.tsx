@@ -54,7 +54,7 @@ const SCREENS = [
     bg: "rgba(245,158,11,0.12)",
     border: "rgba(245,158,11,0.25)",
     title: "forma Pro",
-    subtitle: "Das volle Erlebnis für 4,99€/Monat",
+    subtitle: "Das volle Erlebnis für 14,99€/Monat",
     description: "Mit forma Pro schaltest du KI-Coach, alle Pläne, Blutbild-Scan, Körperanalyse und 50+ Rezepte frei.",
     bullets: [
       "🤖 KI-Coach mit persönlichen Empfehlungen",
