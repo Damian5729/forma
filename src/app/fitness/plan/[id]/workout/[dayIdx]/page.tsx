@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
-import { TRAINING_PLANS } from "@/lib/training-plans";
+import { TRAINING_PLANS, TrainingPlan } from "@/lib/training-plans";
 import { HOME_TRAINING_PLANS } from "@/lib/training-plans-home";
 const ALL_PLANS = [...TRAINING_PLANS, ...HOME_TRAINING_PLANS];
 import { WorkoutPlayer } from "./WorkoutPlayer";
@@ -12,7 +12,30 @@ export default async function WorkoutPage({ params }: { params: Promise<{ id: st
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const plan = ALL_PLANS.find((p) => p.id === id);
+  let plan: TrainingPlan | null = ALL_PLANS.find((p) => p.id === id) ?? null;
+
+  if (!plan) {
+    const { data } = await supabase
+      .from("custom_plans")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+    if (data) {
+      plan = {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        level: data.level,
+        daysPerWeek: data.days_per_week,
+        goal: data.goal,
+        duration: data.duration,
+        location: data.location,
+        days: data.days,
+      } as TrainingPlan;
+    }
+  }
+
   if (!plan || isNaN(dayIdx) || dayIdx >= plan.days.length) notFound();
 
   const day = plan.days[dayIdx];

@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
-import { TRAINING_PLANS } from "@/lib/training-plans";
+import { TRAINING_PLANS, TrainingPlan } from "@/lib/training-plans";
 import { HOME_TRAINING_PLANS } from "@/lib/training-plans-home";
 const ALL_PLANS = [...TRAINING_PLANS, ...HOME_TRAINING_PLANS];
 import Link from "next/link";
@@ -13,8 +13,30 @@ export default async function PlanDetail({ params }: { params: Promise<{ id: str
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const plan = ALL_PLANS.find((p) => p.id === id);
-  if (!plan) notFound();
+  let plan: TrainingPlan | null = ALL_PLANS.find((p) => p.id === id) ?? null;
+  let isCustom = false;
+
+  if (!plan) {
+    const { data } = await supabase
+      .from("custom_plans")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+    if (!data) notFound();
+    plan = {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      level: data.level,
+      daysPerWeek: data.days_per_week,
+      goal: data.goal,
+      duration: data.duration,
+      location: data.location,
+      days: data.days,
+    } as TrainingPlan;
+    isCustom = true;
+  }
 
   // Load user overrides per day
   const { data: overrides } = await supabase
@@ -62,7 +84,14 @@ export default async function PlanDetail({ params }: { params: Promise<{ id: str
             </span>
             <span style={{ fontSize: "10px", color: "var(--text-muted)" }}>{plan.daysPerWeek} Tage/Woche · {plan.duration}</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>{plan.name}</h1>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
+            <h1 style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>{plan.name}</h1>
+            {isCustom && (
+              <Link href={`/fitness/plan/custom/${id}/edit`} style={{ fontSize: "13px", color: "var(--accent-light)", textDecoration: "none", padding: "6px 14px", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "8px" }}>
+                ✏️ Bearbeiten
+              </Link>
+            )}
+          </div>
           <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "6px", lineHeight: 1.6 }}>{plan.description}</p>
         </div>
 
@@ -103,10 +132,14 @@ export default async function PlanDetail({ params }: { params: Promise<{ id: str
                       }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <Link href={`/fitness/${ex.exerciseId}`}
-                              style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", textDecoration: "none" }}>
-                              {ex.name}
-                            </Link>
+                            {ex.exerciseId && !isCustom ? (
+                              <Link href={`/fitness/${ex.exerciseId}`}
+                                style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", textDecoration: "none" }}>
+                                {ex.name}
+                              </Link>
+                            ) : (
+                              <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{ex.name}</span>
+                            )}
                             <div style={{ display: "flex", gap: "10px", marginTop: "3px", flexWrap: "wrap" }}>
                               <span style={{ fontSize: "12px", color: "var(--accent-light)" }}>{ex.sets} × {ex.reps}</span>
                               <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Pause: {ex.rest}</span>

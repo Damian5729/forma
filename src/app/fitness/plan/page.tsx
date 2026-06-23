@@ -5,6 +5,7 @@ import { TRAINING_PLANS } from "@/lib/training-plans";
 import { HOME_TRAINING_PLANS } from "@/lib/training-plans-home";
 import Link from "next/link";
 import { ProPaywall } from "@/components/ProPaywall";
+import { DeleteCustomPlanButton } from "./DeleteCustomPlanButton";
 
 const ALL_PLANS = [...TRAINING_PLANS, ...HOME_TRAINING_PLANS];
 
@@ -65,6 +66,12 @@ export default async function PlansPage({
     .single();
 
   const isPro = profile?.subscription_status?.toLowerCase() === "pro";
+
+  const { data: customPlans } = await supabase
+    .from("custom_plans")
+    .select("id, name, description, level, days_per_week, goal, location, duration")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
   const params = await searchParams;
   const activeFilter = params?.goal ?? "";
@@ -153,6 +160,57 @@ export default async function PlansPage({
               {nutritionTip}
             </p>
           </div>
+        </div>
+
+        {/* Custom plans */}
+        <div style={{ marginBottom: "28px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", letterSpacing: "0.5px" }}>
+              MEINE PLÄNE
+            </h2>
+            <Link href="/fitness/plan/custom/new" style={{ fontSize: "13px", color: "var(--accent-light)", textDecoration: "none", fontWeight: 500 }}>
+              + Neuer Plan
+            </Link>
+          </div>
+          {customPlans && customPlans.length > 0 ? (
+            <div className="grid-2col">
+              {customPlans.map((plan) => (
+                <div key={plan.id} style={{ position: "relative" }}>
+                  <Link href={`/fitness/plan/${plan.id}`} style={{ textDecoration: "none", display: "block" }}>
+                    <div style={{ background: "var(--bg-card)", border: "1.5px solid var(--accent)", borderRadius: "16px", padding: "20px", height: "100%" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                        <span style={{ fontSize: "22px" }}>✏️</span>
+                        <span style={{ fontSize: "10px", color: levelColor[plan.level] ?? "var(--text-muted)", background: `${levelColor[plan.level] ?? "#888"}20`, padding: "3px 8px", borderRadius: "99px" }}>
+                          {plan.level}
+                        </span>
+                      </div>
+                      <h3 style={{ fontSize: "15px", fontWeight: 500, color: "var(--text-primary)", marginBottom: "6px" }}>{plan.name}</h3>
+                      <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "12px" }}>{plan.description || "Eigener Trainingsplan"}</p>
+                      <div style={{ display: "flex", gap: "14px" }}>
+                        <div>
+                          <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>TAGE/WOCHE</div>
+                          <div style={{ fontSize: "14px", fontWeight: 500, color: "var(--accent-light)" }}>{plan.days_per_week}×</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>DAUER</div>
+                          <div style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{plan.duration}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                  <DeleteCustomPlanButton planId={plan.id} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Link href="/fitness/plan/custom/new" style={{ textDecoration: "none" }}>
+              <div style={{ background: "var(--bg-card)", border: "1px dashed var(--border)", borderRadius: "16px", padding: "28px 20px", textAlign: "center" }}>
+                <div style={{ fontSize: "28px", marginBottom: "10px" }}>✏️</div>
+                <p style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-secondary)", marginBottom: "4px" }}>Eigenen Plan erstellen</p>
+                <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>Deine Übungen, dein Rhythmus</p>
+              </div>
+            </Link>
+          )}
         </div>
 
         {/* Recommended plans */}
