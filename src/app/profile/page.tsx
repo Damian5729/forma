@@ -1,8 +1,10 @@
+"use server";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { ProfileForm } from "./ProfileForm";
 import { LogoutButton } from "./LogoutButton";
+import { ManageSubscriptionButton } from "./ManageSubscriptionButton";
 import Link from "next/link";
 
 export default async function Profile() {
@@ -79,10 +81,11 @@ export default async function Profile() {
         {profile?.subscription_status?.toLowerCase() === "pro" ? (
           <div style={{ background: "linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04))", border: "1px solid rgba(245,158,11,0.3)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontSize: "22px" }}>👑</span>
-            <div>
+            <div style={{ flex: 1 }}>
               <p style={{ fontSize: "13px", fontWeight: 500, color: "#F59E0B", margin: 0 }}>forma Pro aktiv</p>
               <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>Alle Features freigeschaltet</p>
             </div>
+            <ManageSubscriptionButton />
           </div>
         ) : (
           <Link href="/upgrade" style={{ display: "flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.04))", border: "1px solid rgba(245,158,11,0.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px", textDecoration: "none" }}>

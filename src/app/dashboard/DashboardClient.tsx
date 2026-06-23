@@ -17,6 +17,7 @@ import { SupplementWidget } from "@/components/SupplementWidget";
 import { SplashScreen } from "@/components/SplashScreen";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { PushNotifications } from "@/components/PushNotifications";
+import { UpgradeSuccess } from "@/components/UpgradeSuccess";
 
 interface MealLog {
   id: string;
@@ -220,6 +221,7 @@ export function DashboardClient({
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
       <SplashScreen userName={userName} />
       <OnboardingTour />
+      <UpgradeSuccess />
       <PushNotifications />
       <Nav active="/dashboard" userName={userName} />
 
