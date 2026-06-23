@@ -318,13 +318,19 @@ export function WorkoutPlayer({ planId, dayIdx, dayName, dayFocus, exercises, la
               <div key={field} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "14px", padding: "16px", textAlign: "center" }}>
                 <p style={{ fontSize: "9px", color: "var(--text-muted)", letterSpacing: "1px", margin: "0 0 10px" }}>{label}</p>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-                  <button onClick={() => updateSet(field, Math.max(0, val - 1))}
+                  <button onClick={() => updateSet(field, Math.max(0, val - (field === "weight" ? 2.5 : 1)))}
                     style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--bg-hover)", border: "1px solid var(--border)", color: "var(--text-primary)", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     −
                   </button>
-                  <div style={{ minWidth: "48px", textAlign: "center" }}>
-                    <span style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>{val}</span>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)", display: "block" }}>{unit}</span>
+                  <div style={{ minWidth: "72px", textAlign: "center" }}>
+                    <input
+                      type="number"
+                      value={val}
+                      onChange={(e) => updateSet(field, parseFloat(e.target.value) || 0)}
+                      onFocus={(e) => e.target.select()}
+                      style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)", background: "transparent", border: "none", outline: "none", width: "72px", textAlign: "center", padding: 0 }}
+                    />
+                    <span style={{ fontSize: "11px", color: "var(--text-muted)", display: "block", marginTop: "-2px" }}>{unit}</span>
                   </div>
                   <button onClick={() => updateSet(field, val + (field === "weight" ? 2.5 : 1))}
                     style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--bg-hover)", border: "1px solid var(--border)", color: "var(--text-primary)", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -336,8 +342,6 @@ export function WorkoutPlayer({ planId, dayIdx, dayName, dayFocus, exercises, la
                     🏆 PR!
                   </div>
                 )}
-                <input type="number" value={val} onChange={(e) => updateSet(field, parseFloat(e.target.value) || 0)}
-                  style={{ marginTop: "8px", width: "70px", padding: "4px 8px", background: "var(--bg-hover)", border: "1px solid var(--border)", borderRadius: "6px", color: "var(--text-secondary)", fontSize: "12px", textAlign: "center", outline: "none" }} />
               </div>
             ))}
           </div>
