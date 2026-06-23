@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+}
+
 export function PushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission | "unsupported">("default");
   const [asked, setAsked] = useState(false);
@@ -12,10 +19,7 @@ export function PushNotifications() {
       return;
     }
     setPermission(Notification.permission);
-    const stored = localStorage.getItem("forma_push_asked");
-    if (stored) setAsked(true);
-
-    // Register service worker
+    if (localStorage.getItem("forma_push_asked")) setAsked(true);
     navigator.serviceWorker.register("/sw.js").catch(() => {});
   }, []);
 
@@ -24,16 +28,25 @@ export function PushNotifications() {
     setAsked(true);
     const result = await Notification.requestPermission();
     setPermission(result);
-    if (result === "granted") {
-      // Show a test notification
-      new Notification("forma", {
-        body: "Benachrichtigungen aktiviert! Wir erinnern dich täglich ans Tracken. 💪",
-        icon: "/icon-192.png",
+    if (result !== "granted") return;
+
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const existing = await reg.pushManager.getSubscription();
+      const sub = existing ?? await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
       });
+      await fetch("/api/push/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sub.toJSON()),
+      });
+    } catch (e) {
+      console.error("Push subscribe failed:", e);
     }
   };
 
-  // Only show prompt once, not if already asked or granted/denied
   if (asked || permission === "granted" || permission === "denied" || permission === "unsupported") {
     return null;
   }
@@ -53,7 +66,7 @@ export function PushNotifications() {
           Täglich erinnert bleiben?
         </p>
         <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0 }}>
-          Wir erinnern dich ans Tracken.
+          10 Erinnerungen über den Tag verteilt.
         </p>
       </div>
       <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
