@@ -418,6 +418,17 @@ export function DashboardClient({
           </Link>
         </div>
 
+        {/* Einkaufsliste button */}
+        <Link href="/einkaufsliste"
+          style={{ display: "flex", alignItems: "center", gap: "12px", background: "var(--g-blue-soft)", border: "1px solid rgba(91,141,217,0.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "10px", textDecoration: "none" }}>
+          <span style={{ fontSize: "22px" }}>🛒</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>Einkaufsliste</p>
+            <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>Zutaten sammeln & abhaken</p>
+          </div>
+          <span style={{ fontSize: "16px", color: "var(--text-muted)" }}>→</span>
+        </Link>
+
         {/* Running widget */}
         {runningWidget && userId && (
           <RunningWidget

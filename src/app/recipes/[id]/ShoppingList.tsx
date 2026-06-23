@@ -11,6 +11,8 @@ export function ShoppingList({ ingredients, title }: { ingredients: Ingredient[]
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
 
   const toggle = (i: number) => {
     setChecked((prev) => {
@@ -25,6 +27,20 @@ export function ShoppingList({ ingredients, title }: { ingredients: Ingredient[]
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const addToList = async () => {
+    setAdding(true);
+    const res = await fetch("/api/shopping-list", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: ingredients, recipeTitle: title }),
+    });
+    setAdding(false);
+    if (res.ok) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2500);
+    }
   };
 
   return (
@@ -62,6 +78,14 @@ export function ShoppingList({ ingredients, title }: { ingredients: Ingredient[]
               </div>
             ))}
           </div>
+
+          <button
+            onClick={addToList}
+            disabled={adding || added}
+            style={{ width: "100%", padding: "11px", marginBottom: "8px", background: added ? "var(--accent-bg)" : "var(--accent)", border: "none", borderRadius: "9px", color: added ? "var(--accent-light)" : "#fff", fontSize: "13px", fontWeight: 500, cursor: adding || added ? "default" : "pointer" }}
+          >
+            {added ? "✓ Zur Einkaufsliste hinzugefügt!" : adding ? "Wird hinzugefügt…" : "🛒 Zur Einkaufsliste hinzufügen"}
+          </button>
 
           <div style={{ display: "flex", gap: "8px" }}>
             <button
