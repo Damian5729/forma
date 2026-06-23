@@ -9,7 +9,25 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-05
 async function getUserIdFromCustomer(customerId: string): Promise<string | null> {
   const customer = await stripe.customers.retrieve(customerId);
   if (customer.deleted) return null;
-  return (customer as Stripe.Customer).metadata?.supabase_user_id ?? null;
+  const c = customer as Stripe.Customer;
+
+  // Try metadata first
+  if (c.metadata?.supabase_user_id) return c.metadata.supabase_user_id;
+
+  // Fallback: look up by email in Supabase
+  if (c.email) {
+    const svc = createServiceRoleClient();
+    const { data } = await svc.auth.admin.listUsers();
+    const match = data?.users?.find((u) => u.email === c.email);
+    if (match) {
+      // Backfill metadata for future lookups
+      await stripe.customers.update(customerId, {
+        metadata: { supabase_user_id: match.id },
+      });
+      return match.id;
+    }
+  }
+  return null;
 }
 
 export async function POST(req: NextRequest) {
