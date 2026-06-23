@@ -83,7 +83,7 @@ export default async function Profile() {
             <span style={{ fontSize: "22px" }}>👑</span>
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: "13px", fontWeight: 500, color: "#F59E0B", margin: 0 }}>forma Pro aktiv</p>
-              <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>Alle Features freigeschaltet</p>
+              <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>Alle Features freigeschaltet · <span style={{ color: "#F59E0B" }}>Abo verwalten ↓</span></p>
             </div>
             <ManageSubscriptionButton />
           </div>
@@ -96,6 +96,18 @@ export default async function Profile() {
             </div>
             <span style={{ color: "#F59E0B", fontSize: "16px" }}>→</span>
           </Link>
+        )}
+
+        {/* Manage subscription — always visible if stripe_subscription_id exists */}
+        {profile?.stripe_subscription_id && profile?.subscription_status?.toLowerCase() !== "pro" && (
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", padding: "12px 16px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontSize: "16px" }}>💳</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>Abo verwalten</p>
+              <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0" }}>Kündigen oder Zahlungsdetails ändern</p>
+            </div>
+            <ManageSubscriptionButton />
+          </div>
         )}
 
         {/* Form */}
