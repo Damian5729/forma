@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 
 type User = {
   id: string;
@@ -14,35 +13,30 @@ export function AdminClient() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const sb = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
-    );
-    sb.auth.getSession().then(({ data }) => {
-      setToken(data.session?.access_token ?? null);
-    });
-    fetch("/api/admin/users")
-      .then((r) => r.json())
-      .then((data) => { setUsers(data); setLoading(false); });
-  }, []);
+  const fetchUsers = async () => {
+    setLoading(true);
+    const res = await fetch("/api/admin/users");
+    const data = await res.json();
+    setUsers(Array.isArray(data) ? data : []);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchUsers(); }, []);
 
   const toggle = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus.toLowerCase() === "pro" ? "free" : "pro";
     setToggling(userId);
-    await fetch("/api/admin/users", {
+    const res = await fetch("/api/admin/users", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-user-token": token ?? "",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, status: newStatus }),
     });
-    setUsers((prev) =>
-      prev.map((u) => u.id === userId ? { ...u, subscription_status: newStatus } : u)
-    );
+    const data = await res.json();
+    if (data.error) {
+      alert("Fehler: " + data.error);
+    }
+    await fetchUsers();
     setToggling(null);
   };
 
