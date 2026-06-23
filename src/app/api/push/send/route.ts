@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import webpush from "web-push";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 const SCHEDULE: Record<number, { title: string; body: string; url: string }> = {
   7:  { title: "Guten Morgen! 🌅",          body: "Frühstück nicht vergessen — jetzt in forma loggen.",      url: "/dashboard" },
   9:  { title: "Wasser getrunken? 💧",       body: "Mindestens 500ml bis jetzt. Bleib hydratisiert!",         url: "/dashboard" },
@@ -26,6 +20,12 @@ async function handleSend(req: NextRequest) {
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL!,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
 
   const hour = new Date().getUTCHours() + 2; // UTC+2 (Germany)
   const msg = SCHEDULE[hour];
