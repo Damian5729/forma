@@ -81,7 +81,7 @@ const BRANDS: Brand[] = [
   {
     name: "Foodspring",
     emoji: "🔵",
-    color: "linear-gradient(135deg,#0d1524,#141418)",
+    color: "rgba(56,120,220,0.1)",
     products: [
       // Whey
       { name: "Whey Protein – Schokolade", calories: 120, protein: 23, carbs: 4.0, fat: 2.0, servingLabel: "30g", category: "Whey" },
@@ -125,7 +125,7 @@ const BRANDS: Brand[] = [
   {
     name: "Myprotein",
     emoji: "🟠",
-    color: "linear-gradient(135deg,#231508,#141418)",
+    color: "rgba(255,120,30,0.1)",
     products: [
       // Impact Whey
       { name: "Impact Whey – Chocolate", calories: 103, protein: 21, carbs: 3.0, fat: 1.9, servingLabel: "25g", category: "Whey" },
@@ -172,7 +172,7 @@ const BRANDS: Brand[] = [
   {
     name: "ESN",
     emoji: "🟡",
-    color: "linear-gradient(135deg,#1a1a08,#141418)",
+    color: "rgba(200,200,20,0.1)",
     products: [
       // Proteinpulver — Whey (pro 30g Serving, berechnet aus /100g)
       { name: "Designer Whey Protein", calories: 113, protein: 22.5, carbs: 1.8, fat: 1.4, servingLabel: "30g", category: "Whey" },
@@ -237,7 +237,7 @@ const BRANDS: Brand[] = [
   {
     name: "Optimum Nutrition",
     emoji: "⭐",
-    color: "linear-gradient(135deg,#1a1508,#141418)",
+    color: "rgba(240,180,0,0.1)",
     products: [
       // Gold Standard Whey
       { name: "Gold Standard Whey – Double Rich Choco", calories: 120, protein: 24, carbs: 3.0, fat: 1.5, servingLabel: "30g", category: "Whey" },
@@ -278,7 +278,7 @@ const BRANDS: Brand[] = [
   {
     name: "Body Attack",
     emoji: "🔴",
-    color: "linear-gradient(135deg,#240808,#141418)",
+    color: "rgba(220,30,30,0.1)",
     products: [
       // Protein
       { name: "Power Protein 90 – Vanille", calories: 115, protein: 22, carbs: 4.0, fat: 1.8, servingLabel: "30g", category: "Whey" },
@@ -310,7 +310,7 @@ const BRANDS: Brand[] = [
   {
     name: "Peak",
     emoji: "⛰️",
-    color: "linear-gradient(135deg,#080d1a,#141418)",
+    color: "rgba(30,60,200,0.1)",
     products: [
       { name: "Peak Whey – Chocolate", calories: 110, protein: 23, carbs: 3.5, fat: 1.5, servingLabel: "30g", category: "Whey" },
       { name: "Peak Whey – Vanilla", calories: 108, protein: 23, carbs: 3.0, fat: 1.5, servingLabel: "30g", category: "Whey" },
@@ -328,7 +328,7 @@ const BRANDS: Brand[] = [
   {
     name: "Eigenes Supplement",
     emoji: "✏️",
-    color: "linear-gradient(135deg,#1a1020,#141418)",
+    color: "rgba(140,60,200,0.1)",
     products: [],
   },
 ];

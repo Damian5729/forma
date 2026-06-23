@@ -19,20 +19,20 @@ export default async function SupplementsPage() {
 
         {/* Header */}
         <div style={{ background: "var(--g-blue-soft)", border: "1px solid rgba(93,202,165,0.15)", borderRadius: "18px", padding: "24px", marginBottom: "24px" }}>
-          <div style={{ fontSize: "40px", marginBottom: "12px" }}>💊</div>
-          <p style={{ fontSize: "11px", color: "var(--accent-light)", letterSpacing: "2px", marginBottom: "6px" }}>SUPPLEMENTS</p>
+          <div style={{ fontSize: "40px", marginBottom: "12px" }}>🥤</div>
+          <p style={{ fontSize: "11px", color: "var(--accent-light)", letterSpacing: "2px", marginBottom: "6px" }}>PROTEIN & SHAKES</p>
           <h1 style={{ fontSize: "22px", fontWeight: 500, color: "var(--text-primary)", letterSpacing: "-0.3px", marginBottom: "8px" }}>
-            Shake oder Riegel loggen
+            Shake, Riegel & Extras loggen
           </h1>
           <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.6 }}>
-            Wähle deine Marke, dann das Produkt — fertig eingetragen.
+            Proteinshakes, Riegel, Snacks & Supplements — Marke wählen, Produkt auswählen, fertig.
           </p>
         </div>
 
         {/* Link to plan */}
         <Link href="/supplements/plan"
           style={{ display: "flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg,rgba(139,92,246,0.12),rgba(139,92,246,0.04))", border: "1px solid rgba(139,92,246,0.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px", textDecoration: "none" }}>
-          <span style={{ fontSize: "22px" }}>💊</span>
+          <span style={{ fontSize: "22px" }}>🥤</span>
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>Supplement Plan</p>
             <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: "2px 0 0" }}>Morgens Ashwagandha, Abends Zink · Blutbild scannen</p>
