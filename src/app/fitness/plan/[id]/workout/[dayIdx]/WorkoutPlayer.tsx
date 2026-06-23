@@ -158,8 +158,8 @@ export function WorkoutPlayer({ planId, dayIdx, dayName, dayFocus, exercises, la
   const currentSet = ex ? logs[ex.name]?.[setIdx] : null;
   const restPct = restTotal > 0 ? (restLeft / restTotal) * 100 : 0;
   const maxLastWeight = last ? Math.max(...last.sets.map((s) => s.weight)) : 0;
-  const isPR = !!(currentSet && currentSet.weight > 0 && currentSet.weight > maxLastWeight && !isBodyweightEx);
   const isBodyweightEx = ex ? BODYWEIGHT_IDS.has(ex.exerciseId) : false;
+  const isPR = !!(currentSet && currentSet.weight > 0 && currentSet.weight > maxLastWeight && !isBodyweightEx);
 
   // ── DONE SCREEN ──
   if (phase === "done") {
