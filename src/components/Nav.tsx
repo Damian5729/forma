@@ -18,10 +18,10 @@ const TOP_LINKS = [
 
 // Items that fan out when FAB is pressed
 const FAB_ITEMS = [
-  { href: "/profile",              label: "Profil",      emoji: "👤", color: "#8B5CF6", glow: "rgba(139,92,246,0.4)"   },
-  { href: "/dashboard/tagesplan",  label: "Tagesplan",   emoji: "📋", color: "#1D9E75", glow: "rgba(29,158,117,0.4)"   },
+  { href: "/progress/calendar",    label: "Kalender",    emoji: "📅", color: "#8B5CF6", glow: "rgba(139,92,246,0.4)"   },
+  { href: "/fitness/plan",         label: "Training",    emoji: "🏋️", color: "#5B8DD9", glow: "rgba(91,141,217,0.4)"   },
   { href: "/dashboard",            label: "Home",        emoji: "🏠", color: "#EF9F27", glow: "rgba(239,159,39,0.5)"   },
-  { href: "/supplements",          label: "Supps",       emoji: "💊", color: "#06B6D4", glow: "rgba(6,182,212,0.4)"    },
+  { href: "/einkaufsliste",        label: "Einkauf",     emoji: "🛒", color: "#06B6D4", glow: "rgba(6,182,212,0.4)"    },
   { href: "/coach",                label: "Coach",       emoji: "🤖", color: "#8B5CF6", glow: "rgba(139,92,246,0.4)"   },
 ];
 

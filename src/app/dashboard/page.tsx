@@ -154,17 +154,6 @@ export default async function Dashboard() {
     supabase.from("supplement_logs").select("supplement_id").eq("user_id", user.id).eq("logged_date", today),
   ]);
 
-  // Calendar + training plans for home
-  const monthStart = `${today.slice(0, 7)}-01`;
-  const [{ data: monthMeals }, { data: monthWorkouts }, { data: customPlans }] = await Promise.all([
-    supabase.from("meal_logs").select("logged_at").eq("user_id", user.id).gte("logged_at", `${monthStart}T00:00:00`),
-    supabase.from("workout_logs").select("logged_at").eq("user_id", user.id).gte("logged_at", `${monthStart}T00:00:00`),
-    supabase.from("custom_plans").select("id, name, level, days_per_week, duration").eq("user_id", user.id).order("created_at", { ascending: false }).limit(6),
-  ]);
-
-  const mealDays = new Set((monthMeals ?? []).map((m: { logged_at: string }) => m.logged_at.split("T")[0]));
-  const workoutDays = new Set((monthWorkouts ?? []).map((w: { logged_at: string }) => w.logged_at.split("T")[0]));
-
   const burnedToday = (activityLogs ?? []).reduce((s: number, a: { calories_burned: number }) => s + a.calories_burned, 0);
   type ActivityLog = { id: string; activity_type: string; duration_minutes: number; calories_burned: number; logged_at: string };
   const stepsToday = stepLog?.steps ?? 0;
@@ -194,9 +183,6 @@ export default async function Dashboard() {
       supplements={suppPlan ?? []}
       suppDoneIds={(suppCompletions ?? []).map((c: { supplement_id: string }) => c.supplement_id)}
       today={today}
-      mealDays={[...mealDays]}
-      workoutDays={[...workoutDays]}
-      customPlans={(customPlans as { id: string; name: string; level: string; days_per_week: number; duration: string }[] | null) ?? []}
     />
   );
 }
