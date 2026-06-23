@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ExercisePicker, PickedExercise } from "../ExercisePicker";
 
 interface Exercise {
   exerciseId: string;
@@ -18,8 +19,7 @@ interface Day {
   exercises: Exercise[];
 }
 
-const EMPTY_EXERCISE = (): Exercise => ({ exerciseId: "", name: "", sets: 3, reps: "8–12", rest: "60 Sek", notes: "" });
-const EMPTY_DAY = (idx: number): Day => ({ name: `Tag ${idx + 1}`, focus: "", exercises: [EMPTY_EXERCISE()] });
+const EMPTY_DAY = (idx: number): Day => ({ name: `Tag ${idx + 1}`, focus: "", exercises: [] });
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 14px", background: "var(--bg-hover)",
@@ -38,6 +38,7 @@ export function CustomPlanBuilder() {
   const [location, setLocation] = useState("Gym");
   const [duration, setDuration] = useState("45–60 Min");
   const [days, setDays] = useState<Day[]>([EMPTY_DAY(0)]);
+  const [pickerDay, setPickerDay] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,9 +48,9 @@ export function CustomPlanBuilder() {
   const updateDay = (i: number, field: keyof Day, value: string) =>
     setDays((d) => d.map((day, idx) => idx === i ? { ...day, [field]: value } : day));
 
-  const addExercise = (dayIdx: number) =>
+  const addPickedExercise = (dayIdx: number, picked: PickedExercise) =>
     setDays((d) => d.map((day, i) => i === dayIdx
-      ? { ...day, exercises: [...day.exercises, EMPTY_EXERCISE()] }
+      ? { ...day, exercises: [...day.exercises, { exerciseId: picked.exerciseId, name: picked.name, sets: 3, reps: "8–12", rest: "60 Sek", notes: "" }] }
       : day));
 
   const removeExercise = (dayIdx: number, exIdx: number) =>
@@ -70,9 +71,7 @@ export function CustomPlanBuilder() {
     if (!name.trim()) { setError("Planname fehlt."); return; }
     for (const day of days) {
       if (!day.focus.trim()) { setError(`Fokus bei "${day.name}" fehlt.`); return; }
-      for (const ex of day.exercises) {
-        if (!ex.name.trim()) { setError(`Übungsname in "${day.name}" fehlt.`); return; }
-      }
+      if (day.exercises.length === 0) { setError(`"${day.name}" hat keine Übungen.`); return; }
     }
     setLoading(true);
     const res = await fetch("/api/custom-plans", {
@@ -165,44 +164,47 @@ export function CustomPlanBuilder() {
 
           {/* Exercises */}
           <div style={{ padding: "12px 20px" }}>
+            {day.exercises.length === 0 && (
+              <p style={{ fontSize: "12px", color: "var(--text-muted)", textAlign: "center", padding: "8px 0" }}>Noch keine Übungen.</p>
+            )}
             {day.exercises.map((ex, exIdx) => (
               <div key={exIdx} style={{ padding: "12px 0", borderBottom: exIdx < day.exercises.length - 1 ? "1px solid var(--border)" : "none" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 80px auto", gap: "8px", alignItems: "center" }}>
-                  <input
-                    style={inputStyle}
-                    placeholder="Übungsname *"
-                    value={ex.name}
-                    onChange={(e) => updateExercise(dayIdx, exIdx, "name", e.target.value)}
-                  />
-                  <input
-                    style={{ ...inputStyle, textAlign: "center", padding: "10px 6px" }}
-                    type="number"
-                    min={1}
-                    placeholder="Sätze"
-                    value={ex.sets}
-                    onChange={(e) => updateExercise(dayIdx, exIdx, "sets", parseInt(e.target.value) || 1)}
-                  />
-                  <input
-                    style={{ ...inputStyle, padding: "10px 8px" }}
-                    placeholder="Wdh."
-                    value={ex.reps}
-                    onChange={(e) => updateExercise(dayIdx, exIdx, "reps", e.target.value)}
-                  />
-                  <input
-                    style={{ ...inputStyle, padding: "10px 8px" }}
-                    placeholder="Pause"
-                    value={ex.rest}
-                    onChange={(e) => updateExercise(dayIdx, exIdx, "rest", e.target.value)}
-                  />
-                  {day.exercises.length > 1 ? (
-                    <button
-                      onClick={() => removeExercise(dayIdx, exIdx)}
-                      style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "16px", cursor: "pointer", padding: "4px" }}
-                    >×</button>
-                  ) : <div style={{ width: "24px" }} />}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{ex.name}</span>
+                  <button
+                    onClick={() => removeExercise(dayIdx, exIdx)}
+                    style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "16px", cursor: "pointer", padding: "4px" }}
+                  >×</button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "70px 90px 90px", gap: "8px", alignItems: "center" }}>
+                  <div>
+                    <label style={{ fontSize: "10px", color: "var(--text-muted)", display: "block", marginBottom: "3px" }}>SÄTZE</label>
+                    <input
+                      style={{ ...inputStyle, textAlign: "center", padding: "8px 6px" }}
+                      type="number" min={1}
+                      value={ex.sets}
+                      onChange={(e) => updateExercise(dayIdx, exIdx, "sets", parseInt(e.target.value) || 1)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "10px", color: "var(--text-muted)", display: "block", marginBottom: "3px" }}>WDH.</label>
+                    <input
+                      style={{ ...inputStyle, padding: "8px" }}
+                      value={ex.reps}
+                      onChange={(e) => updateExercise(dayIdx, exIdx, "reps", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "10px", color: "var(--text-muted)", display: "block", marginBottom: "3px" }}>PAUSE</label>
+                    <input
+                      style={{ ...inputStyle, padding: "8px" }}
+                      value={ex.rest}
+                      onChange={(e) => updateExercise(dayIdx, exIdx, "rest", e.target.value)}
+                    />
+                  </div>
                 </div>
                 <input
-                  style={{ ...inputStyle, marginTop: "6px", fontSize: "12px" }}
+                  style={{ ...inputStyle, marginTop: "8px", fontSize: "12px" }}
                   placeholder="Notizen (optional)"
                   value={ex.notes}
                   onChange={(e) => updateExercise(dayIdx, exIdx, "notes", e.target.value)}
@@ -211,10 +213,10 @@ export function CustomPlanBuilder() {
             ))}
 
             <button
-              onClick={() => addExercise(dayIdx)}
-              style={{ marginTop: "12px", background: "none", border: "1px dashed var(--border)", borderRadius: "8px", color: "var(--text-muted)", fontSize: "13px", cursor: "pointer", width: "100%", padding: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+              onClick={() => setPickerDay(dayIdx)}
+              style={{ marginTop: "12px", background: "none", border: "1px dashed var(--accent)", borderRadius: "8px", color: "var(--accent-light)", fontSize: "13px", fontWeight: 500, cursor: "pointer", width: "100%", padding: "11px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
             >
-              + Übung hinzufügen
+              + Übung auswählen
             </button>
           </div>
         </div>
@@ -247,6 +249,13 @@ export function CustomPlanBuilder() {
       >
         {loading ? "Wird gespeichert..." : "Plan speichern"}
       </button>
+
+      {pickerDay !== null && (
+        <ExercisePicker
+          onPick={(ex) => addPickedExercise(pickerDay, ex)}
+          onClose={() => setPickerDay(null)}
+        />
+      )}
     </div>
   );
 }
