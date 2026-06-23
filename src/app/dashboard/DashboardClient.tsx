@@ -18,6 +18,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { PushNotifications } from "@/components/PushNotifications";
 import { UpgradeSuccess } from "@/components/UpgradeSuccess";
+import { MonthCalendar } from "./MonthCalendar";
 
 interface MealLog {
   id: string;
@@ -73,6 +74,9 @@ interface Props {
   supplements?: { id: string; name: string; dose: string | null; time_of_day: string; emoji: string }[];
   suppDoneIds?: string[];
   today?: string;
+  mealDays?: string[];
+  workoutDays?: string[];
+  customPlans?: { id: string; name: string; level: string; days_per_week: number; duration: string }[];
 }
 
 const mealTypeLabel: Record<string, string> = {
@@ -106,6 +110,9 @@ export function DashboardClient({
   supplements = [],
   suppDoneIds = [],
   today = new Date().toISOString().split("T")[0],
+  mealDays = [],
+  workoutDays = [],
+  customPlans = [],
 }: Props) {
   const router = useRouter();
   const [meals, setMeals] = useState<MealLog[]>(initialMeals);
@@ -476,6 +483,50 @@ export function DashboardClient({
                 </div>
               ))}
             </div>
+          )}
+        </div>
+
+        {/* Kalender */}
+        <div style={{ marginBottom: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>📅 Kalender</h2>
+            <Link href="/progress/calendar" style={{ fontSize: "12px", color: "var(--accent-light)", textDecoration: "none" }}>Details →</Link>
+          </div>
+          <MonthCalendar mealDays={mealDays} workoutDays={workoutDays} />
+        </div>
+
+        {/* Trainingspläne */}
+        <div style={{ marginBottom: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>🏋️ Trainingspläne</h2>
+            <Link href="/fitness/plan" style={{ fontSize: "12px", color: "var(--accent-light)", textDecoration: "none" }}>Alle Pläne →</Link>
+          </div>
+          {customPlans.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {customPlans.map((p) => (
+                <Link key={p.id} href={`/fitness/plan/${p.id}`}
+                  style={{ display: "flex", alignItems: "center", gap: "12px", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", padding: "13px 16px", textDecoration: "none" }}>
+                  <span style={{ fontSize: "20px" }}>✏️</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</p>
+                    <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>{p.level} · {p.days_per_week}× / Woche · {p.duration}</p>
+                  </div>
+                  <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>→</span>
+                </Link>
+              ))}
+              <Link href="/fitness/plan/custom/new"
+                style={{ textAlign: "center", background: "none", border: "1px dashed var(--accent)", borderRadius: "12px", padding: "11px", color: "var(--accent-light)", fontSize: "13px", fontWeight: 500, textDecoration: "none" }}>
+                + Neuen Plan erstellen
+              </Link>
+            </div>
+          ) : (
+            <Link href="/fitness/plan/custom/new" style={{ textDecoration: "none" }}>
+              <div style={{ background: "var(--bg-card)", border: "1px dashed var(--border)", borderRadius: "14px", padding: "24px 20px", textAlign: "center" }}>
+                <div style={{ fontSize: "26px", marginBottom: "8px" }}>🏋️</div>
+                <p style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)", margin: "0 0 3px" }}>Eigenen Trainingsplan erstellen</p>
+                <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>oder fertige Pläne durchstöbern</p>
+              </div>
+            </Link>
           )}
         </div>
 
