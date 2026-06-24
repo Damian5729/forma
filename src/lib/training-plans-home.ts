@@ -160,4 +160,138 @@ export const HOME_TRAINING_PLANS: TrainingPlan[] = [
       },
     ],
   },
+  {
+    id: "home-bodyweight-pro",
+    name: "Bodyweight Pro",
+    description: "Fortgeschrittenes Körpergewichtstraining ohne Equipment — 4 Tage, fordernde Varianten.",
+    level: "Fortgeschritten",
+    daysPerWeek: 4,
+    goal: "Muskelaufbau",
+    location: "Zuhause",
+    duration: "40–50 Min",
+    days: [
+      {
+        name: "Tag 1 — Push",
+        focus: "Brust, Schultern, Trizeps",
+        exercises: [
+          { exerciseId: "push-up", name: "Liegestütz", sets: 4, reps: "15–20", rest: "60 Sek" },
+          { exerciseId: "dips-tricep", name: "Dips (Stuhl)", sets: 4, reps: "12–15", rest: "60 Sek" },
+          { exerciseId: "push-up", name: "Pike Push-Ups", sets: 3, reps: "12", rest: "60 Sek", notes: "Hüfte hoch — Schulterfokus" },
+          { exerciseId: "plank", name: "Planke", sets: 3, reps: "60 Sek", rest: "45 Sek" },
+        ],
+      },
+      {
+        name: "Tag 2 — Pull",
+        focus: "Rücken & Bizeps",
+        exercises: [
+          { exerciseId: "pull-up", name: "Klimmzüge", sets: 4, reps: "max", rest: "90 Sek", notes: "Türreck oder Ast" },
+          { exerciseId: "rowing", name: "Handtuch-Rudern (Tür)", sets: 4, reps: "15", rest: "60 Sek" },
+          { exerciseId: "rear-delt-fly", name: "Reverse Snow Angels", sets: 3, reps: "20", rest: "45 Sek", notes: "Bauchlage am Boden" },
+        ],
+      },
+      {
+        name: "Tag 3 — Legs",
+        focus: "Beine & Gesäß",
+        exercises: [
+          { exerciseId: "squat", name: "Pistol Squat (assistiert)", sets: 4, reps: "8 pro Bein", rest: "75 Sek" },
+          { exerciseId: "lunge", name: "Ausfallschritt", sets: 4, reps: "15 pro Bein", rest: "60 Sek" },
+          { exerciseId: "glute-bridge", name: "Einbeinige Glute Bridge", sets: 3, reps: "15 pro Bein", rest: "45 Sek" },
+          { exerciseId: "calf-raise", name: "Wadenheben", sets: 4, reps: "25", rest: "30 Sek" },
+        ],
+      },
+      {
+        name: "Tag 4 — Core & Kardio",
+        focus: "Bauch & Ausdauer",
+        exercises: [
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 4, reps: "40", rest: "30 Sek" },
+          { exerciseId: "russian-twist", name: "Russian Twist", sets: 4, reps: "30", rest: "30 Sek" },
+          { exerciseId: "leg-raise", name: "Beinheben", sets: 3, reps: "15", rest: "45 Sek" },
+          { exerciseId: "burpee", name: "Burpees", sets: 4, reps: "15", rest: "45 Sek" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "home-fullbody-quick",
+    name: "Express Ganzkörper (Zuhause)",
+    description: "Schnelles Ganzkörper-Workout in 25 Min — ideal für zwischendurch, kein Equipment.",
+    level: "Anfänger",
+    daysPerWeek: 3,
+    goal: "Allgemein",
+    location: "Zuhause",
+    duration: "20–30 Min",
+    days: [
+      {
+        name: "Workout A",
+        focus: "Ganzkörper",
+        exercises: [
+          { exerciseId: "squat", name: "Kniebeuge", sets: 3, reps: "20", rest: "30 Sek" },
+          { exerciseId: "push-up", name: "Liegestütz", sets: 3, reps: "12", rest: "30 Sek" },
+          { exerciseId: "lunge", name: "Ausfallschritt", sets: 3, reps: "12 pro Bein", rest: "30 Sek" },
+          { exerciseId: "plank", name: "Planke", sets: 3, reps: "40 Sek", rest: "30 Sek" },
+        ],
+      },
+      {
+        name: "Workout B",
+        focus: "Ganzkörper + Kardio",
+        exercises: [
+          { exerciseId: "glute-bridge", name: "Glute Bridge", sets: 3, reps: "20", rest: "30 Sek" },
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 3, reps: "30", rest: "30 Sek" },
+          { exerciseId: "push-up", name: "Liegestütz (Knie)", sets: 3, reps: "15", rest: "30 Sek" },
+          { exerciseId: "burpee", name: "Burpees", sets: 3, reps: "10", rest: "30 Sek" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "home-hiit-advanced",
+    name: "HIIT Fettkiller (Zuhause)",
+    description: "Intensives Intervalltraining für maximale Fettverbrennung — 4 Tage, nur Körpergewicht.",
+    level: "Mittel",
+    daysPerWeek: 4,
+    goal: "Fettabbau",
+    location: "Zuhause",
+    duration: "25–35 Min",
+    days: [
+      {
+        name: "HIIT 1 — Unterkörper",
+        focus: "Beine & Gesäß",
+        exercises: [
+          { exerciseId: "squat", name: "Jump Squats", sets: 5, reps: "20", rest: "20 Sek" },
+          { exerciseId: "lunge", name: "Sprung-Ausfallschritte", sets: 5, reps: "16", rest: "20 Sek" },
+          { exerciseId: "glute-bridge", name: "Glute Bridge", sets: 4, reps: "20", rest: "20 Sek" },
+          { exerciseId: "burpee", name: "Burpees", sets: 4, reps: "12", rest: "30 Sek" },
+        ],
+      },
+      {
+        name: "HIIT 2 — Oberkörper",
+        focus: "Brust, Rücken, Arme",
+        exercises: [
+          { exerciseId: "push-up", name: "Explosive Liegestütz", sets: 5, reps: "12", rest: "20 Sek" },
+          { exerciseId: "dips-tricep", name: "Dips (Stuhl)", sets: 4, reps: "15", rest: "20 Sek" },
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 5, reps: "40", rest: "20 Sek" },
+        ],
+      },
+      {
+        name: "HIIT 3 — Core",
+        focus: "Bauch & Rumpf",
+        exercises: [
+          { exerciseId: "russian-twist", name: "Russian Twist", sets: 5, reps: "30", rest: "20 Sek" },
+          { exerciseId: "leg-raise", name: "Beinheben", sets: 4, reps: "15", rest: "20 Sek" },
+          { exerciseId: "plank", name: "Planke", sets: 4, reps: "45 Sek", rest: "20 Sek" },
+          { exerciseId: "mountain-climber", name: "Cross-Body Climber", sets: 4, reps: "40", rest: "20 Sek" },
+        ],
+      },
+      {
+        name: "HIIT 4 — Ganzkörper Tabata",
+        focus: "Ganzkörper Intervall",
+        exercises: [
+          { exerciseId: "burpee", name: "Burpees", sets: 6, reps: "20 Sek", rest: "10 Sek" },
+          { exerciseId: "squat", name: "Jump Squats", sets: 6, reps: "20 Sek", rest: "10 Sek" },
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 6, reps: "20 Sek", rest: "10 Sek" },
+          { exerciseId: "push-up", name: "Liegestütz", sets: 6, reps: "20 Sek", rest: "10 Sek" },
+        ],
+      },
+    ],
+  },
 ];
