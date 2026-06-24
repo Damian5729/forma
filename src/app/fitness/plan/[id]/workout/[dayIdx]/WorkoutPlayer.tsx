@@ -14,6 +14,9 @@ const BODYWEIGHT_IDS = new Set([
   "crunch", "russian-twist", "leg-raise", "glute-bridge", "lunge", "step-up",
   "mountain-climber", "dead-bug", "v-sit", "ab-wheel", "donkey-kick",
   "calf-raise", "running", "burpee", "jump-rope", "box-jump",
+  "incline-push-up", "chin-up", "inverted-row", "bench-dip", "diamond-push-up",
+  "walking-lunge", "sissy-squat", "nordic-curl", "curtsy-lunge",
+  "hanging-leg-raise", "bicycle-crunch", "hollow-hold", "jumping-jack", "high-knees",
 ]);
 
 interface Props {

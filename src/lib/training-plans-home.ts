@@ -294,4 +294,76 @@ export const HOME_TRAINING_PLANS: TrainingPlan[] = [
       },
     ],
   },
+  {
+    id: "home-core-burn",
+    name: "Core Burn (Zuhause)",
+    description: "Bauch- und Rumpf-Workout ohne Equipment — 3× pro Woche für einen starken Core.",
+    level: "Anfänger",
+    daysPerWeek: 3,
+    goal: "Allgemein",
+    location: "Zuhause",
+    duration: "15–25 Min",
+    days: [
+      {
+        name: "Core A",
+        focus: "Gerader Bauch",
+        exercises: [
+          { exerciseId: "crunch", name: "Crunches", sets: 4, reps: "20", rest: "30 Sek" },
+          { exerciseId: "leg-raise", name: "Beinheben", sets: 4, reps: "15", rest: "30 Sek" },
+          { exerciseId: "bicycle-crunch", name: "Fahrrad-Crunch", sets: 3, reps: "30", rest: "30 Sek" },
+          { exerciseId: "plank", name: "Planke", sets: 3, reps: "45 Sek", rest: "30 Sek" },
+        ],
+      },
+      {
+        name: "Core B",
+        focus: "Schräg & Stabilität",
+        exercises: [
+          { exerciseId: "russian-twist", name: "Russian Twist", sets: 4, reps: "30", rest: "30 Sek" },
+          { exerciseId: "side-plank", name: "Seitliche Planke", sets: 3, reps: "40 Sek pro Seite", rest: "30 Sek" },
+          { exerciseId: "hollow-hold", name: "Hollow Hold", sets: 3, reps: "30 Sek", rest: "30 Sek" },
+          { exerciseId: "dead-bug", name: "Dead Bug", sets: 3, reps: "12 pro Seite", rest: "30 Sek" },
+        ],
+      },
+      {
+        name: "Core C",
+        focus: "Ganzer Rumpf",
+        exercises: [
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 4, reps: "40", rest: "30 Sek" },
+          { exerciseId: "v-sit", name: "V-Sits", sets: 3, reps: "15", rest: "30 Sek" },
+          { exerciseId: "plank", name: "Planke", sets: 3, reps: "60 Sek", rest: "30 Sek" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "home-cardio-blast",
+    name: "Cardio Blast (Zuhause)",
+    description: "Reines Kardio-Workout ohne Geräte — verbrennt Kalorien und bringt den Kreislauf in Schwung.",
+    level: "Anfänger",
+    daysPerWeek: 3,
+    goal: "Fettabbau",
+    location: "Zuhause",
+    duration: "20–30 Min",
+    days: [
+      {
+        name: "Cardio A",
+        focus: "Ganzkörper Kardio",
+        exercises: [
+          { exerciseId: "jumping-jack", name: "Hampelmann", sets: 4, reps: "45 Sek", rest: "20 Sek" },
+          { exerciseId: "high-knees", name: "High Knees", sets: 4, reps: "40 Sek", rest: "20 Sek" },
+          { exerciseId: "burpee", name: "Burpees", sets: 4, reps: "12", rest: "30 Sek" },
+          { exerciseId: "mountain-climber", name: "Mountain Climber", sets: 4, reps: "40", rest: "20 Sek" },
+        ],
+      },
+      {
+        name: "Cardio B",
+        focus: "Intervall Kardio",
+        exercises: [
+          { exerciseId: "squat", name: "Jump Squats", sets: 5, reps: "20", rest: "20 Sek" },
+          { exerciseId: "jumping-jack", name: "Hampelmann", sets: 5, reps: "45 Sek", rest: "15 Sek" },
+          { exerciseId: "high-knees", name: "High Knees", sets: 5, reps: "40 Sek", rest: "15 Sek" },
+        ],
+      },
+    ],
+  },
 ];
