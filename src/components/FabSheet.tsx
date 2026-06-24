@@ -7,10 +7,16 @@ import { MonthCalendar } from "./MonthCalendar";
 interface CustomPlan { id: string; name: string; level: string; days_per_week: number; duration: string; }
 
 const SHORTCUTS = [
-  { href: "/dashboard",      label: "Home",    emoji: "🏠" },
-  { href: "/einkaufsliste",  label: "Einkauf", emoji: "🛒" },
-  { href: "/coach",          label: "Coach",   emoji: "🤖" },
-  { href: "/profile",        label: "Profil",  emoji: "👤" },
+  { href: "/dashboard",            label: "Home",       emoji: "🏠" },
+  { href: "/dashboard/tagesplan",  label: "Tagesplan",  emoji: "📋" },
+  { href: "/dashboard/wochenplan", label: "Wochenplan", emoji: "🗓️" },
+  { href: "/recipes",              label: "Rezepte",    emoji: "🍽" },
+  { href: "/fitness",              label: "Fitness",    emoji: "💪" },
+  { href: "/einkaufsliste",        label: "Einkauf",    emoji: "🛒" },
+  { href: "/supplements",          label: "Supps",      emoji: "💊" },
+  { href: "/progress",             label: "Fortschritt", emoji: "📊" },
+  { href: "/coach",                label: "Coach",      emoji: "🤖" },
+  { href: "/profile",              label: "Profil",     emoji: "👤" },
 ];
 
 export function FabSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
