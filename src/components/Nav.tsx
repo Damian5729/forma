@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "./ThemeToggle";
+import { FabSheet } from "./FabSheet";
 
 const TOP_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -14,24 +15,6 @@ const TOP_LINKS = [
   { href: "/supplements", label: "Supplements" },
   { href: "/coach", label: "KI-Coach" },
   { href: "/profile", label: "Profil" },
-];
-
-// Items that fan out when FAB is pressed
-const FAB_ITEMS = [
-  { href: "/progress/calendar",    label: "Kalender",    emoji: "📅", color: "#8B5CF6", glow: "rgba(139,92,246,0.4)"   },
-  { href: "/fitness/plan",         label: "Training",    emoji: "🏋️", color: "#5B8DD9", glow: "rgba(91,141,217,0.4)"   },
-  { href: "/dashboard",            label: "Home",        emoji: "🏠", color: "#EF9F27", glow: "rgba(239,159,39,0.5)"   },
-  { href: "/einkaufsliste",        label: "Einkauf",     emoji: "🛒", color: "#06B6D4", glow: "rgba(6,182,212,0.4)"    },
-  { href: "/coach",                label: "Coach",       emoji: "🤖", color: "#8B5CF6", glow: "rgba(139,92,246,0.4)"   },
-];
-
-// Fan positions (arc above center, radius ~115px)
-const FAB_POSITIONS = [
-  { x: -116, y: -32  }, // far left
-  { x:  -76, y: -90  }, // upper-left
-  { x:    0, y: -118 }, // top
-  { x:   76, y: -90  }, // upper-right
-  { x:  116, y: -32  }, // far right
 ];
 
 const NAV_LEFT  = [
@@ -106,67 +89,8 @@ export function Nav({ active, userName }: { active: string; userName?: string })
       {/* ── BOTTOM NAV ── */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200 }} className="bottom-nav-wrapper">
 
-        {/* Blur overlay when FAB open */}
-        {fabOpen && (
-          <div
-            onClick={() => setFabOpen(false)}
-            style={{
-              position: "fixed", inset: 0, zIndex: 190,
-              background: "rgba(0,0,0,0.55)",
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              animation: "fadeIn 0.2s ease",
-            }}
-          />
-        )}
-
-        {/* FAB items — rendered above center */}
-        {FAB_ITEMS.map((item, i) => {
-          const pos = FAB_POSITIONS[i];
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setFabOpen(false)}
-              style={{
-                position: "fixed",
-                bottom: `calc(var(--bottom-nav-height) / 2 + env(safe-area-inset-bottom))`,
-                left: "50%",
-                zIndex: 220,
-                transform: fabOpen
-                  ? `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px)) scale(1)`
-                  : `translate(-50%, -50%) scale(0)`,
-                opacity: fabOpen ? 1 : 0,
-                transition: `all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${fabOpen ? i * 40 : (4 - i) * 30}ms`,
-                pointerEvents: fabOpen ? "auto" : "none",
-                textDecoration: "none",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "5px",
-              }}
-            >
-              <div style={{
-                width: "58px", height: "58px",
-                borderRadius: "20px",
-                background: `linear-gradient(135deg, ${item.color}dd, ${item.color}88)`,
-                border: `1px solid ${item.color}66`,
-                boxShadow: `0 6px 24px ${item.glow}, 0 0 0 1px ${item.color}22`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "26px",
-              }}>
-                {item.emoji}
-              </div>
-              <span style={{
-                fontSize: "10px", fontWeight: 600, color: "#fff",
-                letterSpacing: "0.3px",
-                textShadow: "0 1px 4px rgba(0,0,0,0.8)",
-              }}>
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+        {/* FAB sheet — calendar + training plans + shortcuts */}
+        <FabSheet open={fabOpen} onClose={() => setFabOpen(false)} />
 
         {/* Bottom bar */}
         <div className="bottom-nav" style={{
